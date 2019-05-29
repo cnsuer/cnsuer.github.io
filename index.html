@@ -335,6 +335,193 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://notes.restver.me/2019/05/29/autoreleasepool/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="restver">
+      <meta itemprop="description" content="restver's ios&web notes">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Restver's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/05/29/autoreleasepool/" class="post-title-link" itemprop="url">autoreleasepool和autorelease原理探究</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-29 18:36:24" itemprop="dateCreated datePublished" datetime="2019-05-29T18:36:24+08:00">2019-05-29</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <a href="/2019/05/29/autoreleasepool/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/05/29/autoreleasepool/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2019/05/29/autoreleasepool/" class="leancloud_visitors" data-flag-title="autoreleasepool和autorelease原理探究">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h4 id="前段时间离职了-现在终于有时间来了解些以前一直没有弄懂的知识了-啥也不说了-失业才是第一生产力-啊哈哈哈哈哈。。。。。"><a href="#前段时间离职了-现在终于有时间来了解些以前一直没有弄懂的知识了-啥也不说了-失业才是第一生产力-啊哈哈哈哈哈。。。。。" class="headerlink" title="前段时间离职了,现在终于有时间来了解些以前一直没有弄懂的知识了,啥也不说了,失业才是第一生产力,啊哈哈哈哈哈。。。。。"></a>前段时间离职了,现在终于有时间来了解些以前一直没有弄懂的知识了,啥也不说了,失业才是第一生产力,啊哈哈哈哈哈。。。。。</h4><h4 id="先把项目改为MRC-在main-m中写如下代码"><a href="#先把项目改为MRC-在main-m中写如下代码" class="headerlink" title="先把项目改为MRC,在main.m中写如下代码."></a>先把项目改为MRC,在main.m中写如下代码.</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[]) &#123;</span><br><span class="line">	<span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">		__unused RTStudent *stu = [[[RTStudent alloc] init] autorelease];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用<code>xcrun -sdk iphoneos clang -arch arm64 -rewrite-objc main.m</code>转为C++代码,再整理后得<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</span><br><span class="line">    &#123; </span><br><span class="line">        __AtAutoreleasePool __autoreleasepool;</span><br><span class="line">        RTStudent *stu = objc_msgSend(objc_msgSend(objc_msgSend(objc_getClass(<span class="string">"RTStudent"</span>), sel_registerName(<span class="string">"alloc"</span>)), sel_registerName(<span class="string">"init"</span>)), sel_registerName(<span class="string">"autorelease"</span>));</span><br><span class="line">    &#125;</span><br><span class="line"> <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/05/29/autoreleasepool/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://notes.restver.me/2019/01/16/ios-load-local-html/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -543,7 +730,7 @@
           <h1 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/2019/01/15/dart-constructor/" class="post-title-link" itemprop="url">彻底理解Dart中的构造函数</a>
+                <a href="/2019/01/15/dart-constructor/" class="post-title-link" itemprop="url">理解Dart中的构造函数</a>
               
             
           </h1>
@@ -613,7 +800,7 @@
 
           
           
-            <span id="/2019/01/15/dart-constructor/" class="leancloud_visitors" data-flag-title="彻底理解Dart中的构造函数">
+            <span id="/2019/01/15/dart-constructor/" class="leancloud_visitors" data-flag-title="理解Dart中的构造函数">
               <span class="post-meta-divider">|</span>
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
@@ -1121,7 +1308,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-count">5</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

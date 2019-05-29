@@ -106,7 +106,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://restver.me/assets/images/js-app-invoke/path_error.jpg">
 <meta property="og:image" content="https://restver.me/assets/images/js-app-invoke/hash_path_error.jpg">
-<meta property="og:updated_time" content="2019-01-16T10:52:24.528Z">
+<meta property="og:updated_time" content="2019-01-16T10:52:26.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS webView加载本地html，并在url携带query">
 <meta name="twitter:description" content="为了加快页面的加载速度和在无网络时也能加载出来网页，所以项目把加载url的做法废弃了，把vue生成的dist文件，用webview本地加载，由于平时都是直接写url地址，所以第一次写的时候，翻了好多网上的文章，现在我只有一句话想说，大家别抄来抄去了，转发之前,自己先测试下吧。。。。。 读取本地的HTML">
@@ -508,8 +508,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/01/15/dart-constructor/" rel="next" title="彻底理解Dart中的构造函数">
-                <i class="fa fa-chevron-left"></i> 彻底理解Dart中的构造函数
+              <a href="/2019/01/15/dart-constructor/" rel="next" title="理解Dart中的构造函数">
+                <i class="fa fa-chevron-left"></i> 理解Dart中的构造函数
               </a>
             
           </div>
@@ -517,6 +517,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/29/autoreleasepool/" rel="prev" title="autoreleasepool和autorelease原理探究">
+                autoreleasepool和autorelease原理探究 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -590,7 +594,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-count">5</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -891,9 +895,14 @@
               })
           } else {
             
-              var $element = $(document.getElementById(url));
-              $element.find('.leancloud-visitors-count').text('Counter not initialized! More info at console err msg.');
-              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+              Counter('post', '/classes/Counter', JSON.stringify({ title: title, url: url, time: 1 }))
+                .done(function() {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(1);
+                })
+                .fail(function() {
+                  console.log('Failed to create');
+                });
             
           }
         })

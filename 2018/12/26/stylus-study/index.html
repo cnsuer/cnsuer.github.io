@@ -109,7 +109,7 @@
 <meta property="og:image" content="https://restver.me/assets/images/stylus-study/diedai.png">
 <meta property="og:image" content="https://restver.me/assets/images/stylus-study/diedai2.png">
 <meta property="og:image" content="https://restver.me/assets/images/stylus-study/hanshu.png">
-<meta property="og:updated_time" content="2019-01-14T07:50:12.715Z">
+<meta property="og:updated_time" content="2019-01-14T07:50:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="stylu使用总结之 &amp; 、迭代 、判断 、函数">
 <meta name="twitter:description" content="&amp;amp;  ——&amp;gt; 父级的引用     123&amp;lt;div&amp;gt;  &amp;lt;div class=&quot;a&quot;&amp;gt;黑化肥挥发发灰会花飞；灰化肥挥发发黑会飞花&amp;lt;/div&amp;gt;&amp;lt;/div&amp;gt;   css的写法   12.a&amp;#123; height: 120px; width: 120px; background-color: green; &amp;#125;.a:hover &amp;#">
@@ -534,8 +534,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/01/15/dart-constructor/" rel="prev" title="彻底理解Dart中的构造函数">
-                彻底理解Dart中的构造函数 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/01/15/dart-constructor/" rel="prev" title="理解Dart中的构造函数">
+                理解Dart中的构造函数 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -610,7 +610,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-count">5</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -911,9 +911,14 @@
               })
           } else {
             
-              var $element = $(document.getElementById(url));
-              $element.find('.leancloud-visitors-count').text('Counter not initialized! More info at console err msg.');
-              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+              Counter('post', '/classes/Counter', JSON.stringify({ title: title, url: url, time: 1 }))
+                .done(function() {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(1);
+                })
+                .fail(function() {
+                  console.log('Failed to create');
+                });
             
           }
         })

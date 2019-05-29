@@ -110,7 +110,7 @@
 <meta property="og:image" content="https://restver.me/assets/images/js-app-invoke/res2.jpg">
 <meta property="og:image" content="https://restver.me/assets/images/js-app-invoke/error3.jpg">
 <meta property="og:image" content="https://restver.me/assets/images/js-app-invoke/res3.jpg">
-<meta property="og:updated_time" content="2019-01-16T09:11:18.575Z">
+<meta property="og:updated_time" content="2019-01-16T09:11:20.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="vue中js和app互相调用">
 <meta name="twitter:description" content="最近做的一个项目，基本上是抛弃了原生，整个app就是一个webview，web不能实现的功能，就需要和app进行交互了。  需求来了，接下来要做的就是实现了，然后随手就把实现代码写出来了： Round 1  如图所示:">
@@ -598,7 +598,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-count">5</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -899,9 +899,14 @@
               })
           } else {
             
-              var $element = $(document.getElementById(url));
-              $element.find('.leancloud-visitors-count').text('Counter not initialized! More info at console err msg.');
-              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+              Counter('post', '/classes/Counter', JSON.stringify({ title: title, url: url, time: 1 }))
+                .done(function() {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(1);
+                })
+                .fail(function() {
+                  console.log('Failed to create');
+                });
             
           }
         })

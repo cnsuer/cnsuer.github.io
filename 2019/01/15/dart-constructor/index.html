@@ -99,14 +99,14 @@
   <meta name="description" content="Dart语言中的类 Dart 语言中所有的对象都是某一个类的实例,所有的类有同一个基类–Object Dart 是一种面向对象的语言，并且支持基于mixin的继承方式 基于mixin的继承方式具体是指：一个类可以继承自多个父类  创建对象 使用new语句来构造一个类，构造函数的名字可能是ClassName，也可以是ClassName.otherName  123var p1 = new Perso">
 <meta name="keywords" content="dart构造函数">
 <meta property="og:type" content="article">
-<meta property="og:title" content="彻底理解Dart中的构造函数">
+<meta property="og:title" content="理解Dart中的构造函数">
 <meta property="og:url" content="https://notes.restver.me/2019/01/15/dart-constructor/index.html">
 <meta property="og:site_name" content="Restver&#39;s Notes">
 <meta property="og:description" content="Dart语言中的类 Dart 语言中所有的对象都是某一个类的实例,所有的类有同一个基类–Object Dart 是一种面向对象的语言，并且支持基于mixin的继承方式 基于mixin的继承方式具体是指：一个类可以继承自多个父类  创建对象 使用new语句来构造一个类，构造函数的名字可能是ClassName，也可以是ClassName.otherName  123var p1 = new Perso">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-01-15T09:29:57.147Z">
+<meta property="og:updated_time" content="2019-05-29T10:36:59.289Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="彻底理解Dart中的构造函数">
+<meta name="twitter:title" content="理解Dart中的构造函数">
 <meta name="twitter:description" content="Dart语言中的类 Dart 语言中所有的对象都是某一个类的实例,所有的类有同一个基类–Object Dart 是一种面向对象的语言，并且支持基于mixin的继承方式 基于mixin的继承方式具体是指：一个类可以继承自多个父类  创建对象 使用new语句来构造一个类，构造函数的名字可能是ClassName，也可以是ClassName.otherName  123var p1 = new Perso">
 
 
@@ -124,7 +124,7 @@
   };
 </script>
 
-  <title>彻底理解Dart中的构造函数 | Restver's Notes</title>
+  <title>理解Dart中的构造函数 | Restver's Notes</title>
   
 
 
@@ -350,7 +350,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">彻底理解Dart中的构造函数
+          <h1 class="post-title" itemprop="name headline">理解Dart中的构造函数
 
               
             
@@ -421,7 +421,7 @@
 
           
           
-            <span id="/2019/01/15/dart-constructor/" class="leancloud_visitors" data-flag-title="彻底理解Dart中的构造函数">
+            <span id="/2019/01/15/dart-constructor/" class="leancloud_visitors" data-flag-title="理解Dart中的构造函数">
               <span class="post-meta-divider">|</span>
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
@@ -614,7 +614,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-count">5</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -915,9 +915,14 @@
               })
           } else {
             
-              var $element = $(document.getElementById(url));
-              $element.find('.leancloud-visitors-count').text('Counter not initialized! More info at console err msg.');
-              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+              Counter('post', '/classes/Counter', JSON.stringify({ title: title, url: url, time: 1 }))
+                .done(function() {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(1);
+                })
+                .fail(function() {
+                  console.log('Failed to create');
+                });
             
           }
         })
