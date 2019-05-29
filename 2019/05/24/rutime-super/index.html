@@ -96,28 +96,25 @@
 
 
 
-  <meta name="description" content="为了加快页面的加载速度和在无网络时也能加载出来网页，所以项目把加载url的做法废弃了，把vue生成的dist文件，用webview本地加载，由于平时都是直接写url地址，所以第一次写的时候，翻了好多网上的文章，现在我只有一句话想说，大家别抄来抄去了，转发之前,自己先测试下吧。。。。。 读取本地的HTML">
-<meta name="keywords" content="iOS,webView">
+  <meta name="description" content="一道面试题引发的,对于super本质的探究12345678910111213141516@implementation RTStudent-(instancetype)init &amp;#123;	if (self = [super init]) &amp;#123;		NSLog(@&quot;self和super调用class的结果:&quot;);		NSLog(@&quot;[self class]---%@&quot;,[self clas">
+<meta name="keywords" content="iOS">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS webView加载本地html，并在url携带query">
-<meta property="og:url" content="https://notes.restver.me/2019/01/16/ios-load-local-html/index.html">
+<meta property="og:title" content="Runtime -- super的本质">
+<meta property="og:url" content="https://notes.restver.me/2019/05/24/rutime-super/index.html">
 <meta property="og:site_name" content="Restver&#39;s Notes">
-<meta property="og:description" content="为了加快页面的加载速度和在无网络时也能加载出来网页，所以项目把加载url的做法废弃了，把vue生成的dist文件，用webview本地加载，由于平时都是直接写url地址，所以第一次写的时候，翻了好多网上的文章，现在我只有一句话想说，大家别抄来抄去了，转发之前,自己先测试下吧。。。。。 读取本地的HTML">
+<meta property="og:description" content="一道面试题引发的,对于super本质的探究12345678910111213141516@implementation RTStudent-(instancetype)init &amp;#123;	if (self = [super init]) &amp;#123;		NSLog(@&quot;self和super调用class的结果:&quot;);		NSLog(@&quot;[self class]---%@&quot;,[self clas">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://restver.me/assets/images/js-app-invoke/path_error.jpg">
-<meta property="og:image" content="https://restver.me/assets/images/js-app-invoke/hash_path_error.jpg">
-<meta property="og:updated_time" content="2019-01-16T10:52:26.000Z">
+<meta property="og:updated_time" content="2019-05-29T11:51:07.454Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="iOS webView加载本地html，并在url携带query">
-<meta name="twitter:description" content="为了加快页面的加载速度和在无网络时也能加载出来网页，所以项目把加载url的做法废弃了，把vue生成的dist文件，用webview本地加载，由于平时都是直接写url地址，所以第一次写的时候，翻了好多网上的文章，现在我只有一句话想说，大家别抄来抄去了，转发之前,自己先测试下吧。。。。。 读取本地的HTML">
-<meta name="twitter:image" content="https://restver.me/assets/images/js-app-invoke/path_error.jpg">
+<meta name="twitter:title" content="Runtime -- super的本质">
+<meta name="twitter:description" content="一道面试题引发的,对于super本质的探究12345678910111213141516@implementation RTStudent-(instancetype)init &amp;#123;	if (self = [super init]) &amp;#123;		NSLog(@&quot;self和super调用class的结果:&quot;);		NSLog(@&quot;[self class]---%@&quot;,[self clas">
 
 
 
 
 
 
-  <link rel="canonical" href="https://notes.restver.me/2019/01/16/ios-load-local-html/">
+  <link rel="canonical" href="https://notes.restver.me/2019/05/24/rutime-super/">
 
 
 
@@ -127,7 +124,7 @@
   };
 </script>
 
-  <title>iOS webView加载本地html，并在url携带query | Restver's Notes</title>
+  <title>Runtime -- super的本质 | Restver's Notes</title>
   
 
 
@@ -336,7 +333,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://notes.restver.me/2019/01/16/ios-load-local-html/">
+    <link itemprop="mainEntityOfPage" href="https://notes.restver.me/2019/05/24/rutime-super/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="restver">
@@ -353,7 +350,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">iOS webView加载本地html，并在url携带query
+          <h1 class="post-title" itemprop="name headline">Runtime -- super的本质
 
               
             
@@ -379,7 +376,7 @@
                 
               
 
-              <time title="创建时间：2019-01-16 17:13:14" itemprop="dateCreated datePublished" datetime="2019-01-16T17:13:14+08:00">2019-01-16</time>
+              <time title="创建时间：2019-05-24 13:43:39" itemprop="dateCreated datePublished" datetime="2019-05-24T13:43:39+08:00">2019-05-24</time>
             
 
             
@@ -415,8 +412,8 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
             
-                <a href="/2019/01/16/ios-load-local-html/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/01/16/ios-load-local-html/" itemprop="commentCount"></span>
+                <a href="/2019/05/24/rutime-super/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/05/24/rutime-super/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -424,7 +421,7 @@
 
           
           
-            <span id="/2019/01/16/ios-load-local-html/" class="leancloud_visitors" data-flag-title="iOS webView加载本地html，并在url携带query">
+            <span id="/2019/05/24/rutime-super/" class="leancloud_visitors" data-flag-title="Runtime -- super的本质">
               <span class="post-meta-divider">|</span>
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
@@ -455,21 +452,24 @@
       
 
       
-        <h4 id="为了加快页面的加载速度和在无网络时也能加载出来网页，所以项目把加载url的做法废弃了，把vue生成的dist文件，用webview本地加载，由于平时都是直接写url地址，所以第一次写的时候，翻了好多网上的文章，现在我只有一句话想说，大家别抄来抄去了，转发之前-自己先测试下吧。。。。。"><a href="#为了加快页面的加载速度和在无网络时也能加载出来网页，所以项目把加载url的做法废弃了，把vue生成的dist文件，用webview本地加载，由于平时都是直接写url地址，所以第一次写的时候，翻了好多网上的文章，现在我只有一句话想说，大家别抄来抄去了，转发之前-自己先测试下吧。。。。。" class="headerlink" title="为了加快页面的加载速度和在无网络时也能加载出来网页，所以项目把加载url的做法废弃了，把vue生成的dist文件，用webview本地加载，由于平时都是直接写url地址，所以第一次写的时候，翻了好多网上的文章，现在我只有一句话想说，大家别抄来抄去了，转发之前,自己先测试下吧。。。。。"></a>为了加快页面的加载速度和在无网络时也能加载出来网页，所以项目把加载url的做法废弃了，把vue生成的dist文件，用webview本地加载，由于平时都是直接写url地址，所以第一次写的时候，翻了好多网上的文章，现在我只有一句话想说，大家别抄来抄去了，转发之前,自己先测试下吧。。。。。</h4><ol>
-<li><p>读取本地的HTML</p>
-<p> <img src="https://restver.me/assets/images/js-app-invoke/path_error.jpg" alt="path_error"></p>
- <a id="more"></a>
-<p> 因为iOS的项目，最终编译运行后，所有的文件夹都会被忽略，导致资源文件都会在xxxx.app这个mainBundle中，然后网页的路径不对，网页就加载不出来,因此先创建一个web.bundle，把资源全放进去，加载的时候，用这个bundle加载，就解决了，路径错误的问题</p>
- <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">getUrl</span><span class="params">()</span></span> -&gt; <span class="type">URL</span>? &#123;</span><br><span class="line">  <span class="keyword">if</span> <span class="keyword">let</span> bundlePath = <span class="type">Bundle</span>.main.path(forResource: <span class="string">"web"</span>, ofType: <span class="string">"bundle"</span>), <span class="keyword">let</span> webBundle = <span class="type">Bundle</span>(path: bundlePath) &#123;</span><br><span class="line">    <span class="keyword">return</span> webBundle.url(forResource: <span class="string">"index.html#/game"</span>, withExtension: <span class="literal">nil</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>HTML文件会需要根据URL中不同的Hash 来显示不同的页面。例如#/game显示游戏首页，所以对上边的代码稍作改造</p>
- <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">getUrlPath</span><span class="params">(hash path: String = <span class="string">"game"</span>)</span></span> -&gt; <span class="type">URL</span>? &#123;</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">let</span> bundlePath = <span class="type">Bundle</span>.main.path(forResource: <span class="string">"web"</span>, ofType: <span class="string">"bundle"</span>), <span class="keyword">let</span> webBundle = <span class="type">Bundle</span>(path: bundlePath), <span class="keyword">let</span> indexPath = webBundle.path(forResource: <span class="string">"index"</span>, ofType: <span class="string">"html"</span>)  &#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">let</span> resource = indexPath + <span class="string">"#/"</span> + path</span><br><span class="line">        <span class="keyword">let</span> url = <span class="type">URL</span>(fileURLWithPath: resource)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> url</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p> 然后发现打开的页面是一片空白，最后用Safari调试，打开调试器tab，显示如图的错误，然后打印地址发现了问题，iOS自动的把url最后边的<code>#</code>转为了<code>%23</code>了，导致vue的路由识别不了<br> <img src="https://restver.me/assets/images/js-app-invoke/hash_path_error.jpg" alt="path_error"></p>
-<p> 知道了问题，然后在修改为如下代码，最终问题解决</p>
- <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">urlStringFrom</span><span class="params">(bundle named: String = <span class="string">"web"</span>, hash path: String = <span class="string">"game"</span>)</span></span> -&gt; <span class="type">String</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">let</span> bundlePath = <span class="type">Bundle</span>.main.path(forResource: named, ofType: <span class="string">"bundle"</span>), <span class="keyword">let</span> webBundle = <span class="type">Bundle</span>(path: bundlePath), <span class="keyword">let</span> indexPath = webBundle.path(forResource: <span class="string">"index"</span>, ofType: <span class="string">"html"</span>) &#123;</span><br><span class="line">        <span class="keyword">let</span> url = <span class="type">URL</span>(fileURLWithPath: indexPath)</span><br><span class="line">        <span class="keyword">return</span> url.absoluteString + <span class="string">"#/"</span> + path</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"http://192.168.1.48:8090"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="Demo"><a href="#Demo" class="headerlink" title="Demo"></a>Demo</h4><p><a href="https://github.com/cnsuer/JsAppInteraction/tree/master/ios" target="_blank" rel="noopener">Demo</a></p>
-</li>
-</ol>
+        <h4 id="一道面试题引发的-对于super本质的探究"><a href="#一道面试题引发的-对于super本质的探究" class="headerlink" title="一道面试题引发的,对于super本质的探究"></a>一道面试题引发的,对于super本质的探究</h4><figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">RTStudent</span></span></span><br><span class="line"></span><br><span class="line">-(<span class="keyword">instancetype</span>)init &#123;</span><br><span class="line">	<span class="keyword">if</span> (<span class="keyword">self</span> = [<span class="keyword">super</span> init]) &#123;</span><br><span class="line">		<span class="built_in">NSLog</span>(<span class="string">@"self和super调用class的结果:"</span>);</span><br><span class="line">		<span class="built_in">NSLog</span>(<span class="string">@"[self class]---%@"</span>,[<span class="keyword">self</span> <span class="keyword">class</span>]);</span><br><span class="line">		<span class="built_in">NSLog</span>(<span class="string">@"[super class]---%@"</span>,[<span class="keyword">super</span> <span class="keyword">class</span>]);</span><br><span class="line">		</span><br><span class="line">		<span class="built_in">NSLog</span>(<span class="string">@"self和super调用superclass的结果:"</span>);</span><br><span class="line">		<span class="built_in">NSLog</span>(<span class="string">@"[self superclass]---%@"</span>,[<span class="keyword">self</span> superclass]);</span><br><span class="line">		<span class="built_in">NSLog</span>(<span class="string">@"[super superclass]---%@"</span>,[<span class="keyword">super</span> superclass]);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>下边的代码打印的是什么?<br><figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[]) &#123;</span><br><span class="line">	<span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">		__unused RTStudent *stu = [[RTStudent alloc] init];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>结果如下<br><figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">self</span>和<span class="keyword">super</span>调用<span class="keyword">class</span>的结果:</span><br><span class="line">[<span class="keyword">self</span> <span class="keyword">class</span>]---RTStudent</span><br><span class="line">[<span class="keyword">super</span> <span class="keyword">class</span>]---RTStudent</span><br><span class="line"></span><br><span class="line"><span class="keyword">self</span>和<span class="keyword">super</span>调用superclass的结果:</span><br><span class="line">[<span class="keyword">self</span> superclass]---RTPerson</span><br><span class="line">[<span class="keyword">super</span> superclass]---RTPerson</span><br></pre></td></tr></table></figure></p>
+<p>为什么是这样的结果呢?<code>super</code>到底是怎么来发消息的?做一个测试:<br><figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">RTStudent</span></span></span><br><span class="line">-(<span class="keyword">void</span>)run&#123;</span><br><span class="line">	[<span class="keyword">super</span> run];</span><br><span class="line">	<span class="built_in">NSLog</span>(<span class="string">@"RTStudent--run"</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure></p>
+<p>运行命令<code>xcrun -sdk iphoneos clang -arch arm64 -rewrite-objc RTStudent.m</code>将<code>RTStudent.m</code>转为<code>c++</code>文件,去掉打印和类型强转后为:<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> _I_RTStudent_run(RTStudent * self, SEL _cmd) &#123;</span><br><span class="line"> objc_msgSendSuper)((__rw_objc_super)&#123;(id)self, (id)class_getSuperclass(objc_getClass(<span class="string">"RTStudent"</span>))&#125;, sel_registerName(<span class="string">"run"</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>第一个参数是个结构体,再次抽取后:<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> _I_RTStudent_run(RTStudent * self, SEL _cmd) &#123;</span><br><span class="line"></span><br><span class="line">__rw_objc_super arg = &#123;</span><br><span class="line">(id)self,</span><br><span class="line">(id)class_getSuperclass(objc_getClass(<span class="string">"RTStudent"</span>))</span><br><span class="line">&#125;</span><br><span class="line">objc_msgSendSuper(arg, sel_registerName(<span class="string">"run"</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>将runtime函数转为oc:<br><figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">class_getSuperclass(objc_getClass(<span class="string">"RTStudent"</span>)) ==&gt; [RTPerson <span class="keyword">class</span>]</span><br><span class="line"></span><br><span class="line">sel_registerName(<span class="string">"run"</span>) ==&gt; <span class="keyword">@selector</span>(run)</span><br></pre></td></tr></table></figure></p>
+<p>最终为:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">static void _I_RTStudent_run(RTStudent * self, SEL _cmd) &#123;</span><br><span class="line"></span><br><span class="line">__rw_objc_super arg = &#123;self, [RTPerson class]&#125;</span><br><span class="line">objc_msgSendSuper(arg, @selector(run));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在runtime源码中找到<code>objc_super</code>结构体定义:<br><figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// Specifies the superclass of an instance. </span></span><br><span class="line"><span class="keyword">struct</span> objc_super &#123;</span><br><span class="line"><span class="keyword">id</span> receiver; <span class="comment">//消息接受者</span></span><br><span class="line">Class super_class; <span class="comment">//消息接受者父类</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p><code>objc_msgSendSuper</code>方法定义为:<br><figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">objc_msgSendSuper(<span class="keyword">struct</span> objc_super * <span class="keyword">super</span>, SEL op, ...)</span><br></pre></td></tr></table></figure></p>
+<p>有文档<code>including the instance of the class that is to receive the message and the superclass at which to start searching for the method implementation</code>可知方法的接收者为结构体中的<code>receiver</code>,查找方法的时候从结构体中的<code>super_class</code>开始,而clas的方法实现为<br><figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (Class)<span class="keyword">class</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> object_getClass(<span class="keyword">self</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>所以<code>object_getClass(self)</code>中的<code>self</code>就是<code>objc_super</code>这个结构体中的<code>receiver</code>,所以<code>[self class]</code>会和<code>[super class]</code>的一样</p>
+<p>以上只是转为c++代码的分析,实际通过打断点查看汇编代码发现,调用的函数是<code>objc_msgSendSuper2</code>(源码在objc-msg-arm64.s文件中,查看函数实现)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">0x100000c0c &lt;+28&gt;: movq   0x6d5(%rip), %rsi         ; (void *)0x0000000100001340: RTStudent</span><br><span class="line">0x100000c13 &lt;+35&gt;: movq   %rsi, -0x18(%rbp)</span><br><span class="line">0x100000c17 &lt;+39&gt;: movq   0x69a(%rip), %rsi         ; &quot;run&quot;</span><br><span class="line">0x100000c1e &lt;+46&gt;: movq   %rax, %rdi</span><br><span class="line">0x100000c21 &lt;+49&gt;: callq  0x100000e54               ; symbol stub for: objc_msgSendSuper2</span><br><span class="line">0x100000c26 &lt;+54&gt;: leaq   0x41b(%rip), %rax         ; @&quot;RTStudent--run&quot;</span><br></pre></td></tr></table></figure></p>
+<p>而且传入的结构体是<code>objc_super2</code><br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> objc_super2 &#123;</span><br><span class="line">    <span class="keyword">id</span> receiver;</span><br><span class="line">    Class current_class;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到第二个变量变为<code>current_class</code>了,那么查找方法时会在当前类对象里查找吗?<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ldr	p16, [x16, #SUPERCLASS]	// p16 = class-&gt;superclass</span><br></pre></td></tr></table></figure></p>
+<p>在<code>objc_msgSendSuper2</code>源码中,发现这句注释<code>class-&gt;superclass</code>,所以最终它还是会直接从父类对象中查找方法</p>
+<p><a href="https://opensource.apple.com/tarballs/objc4/" title="Runtime源码地址" target="_blank" rel="noopener">Runtime源码地址</a></p>
 
       
     </div>
@@ -495,8 +495,6 @@
           
             <a href="/tags/iOS/" rel="tag"><i class="fa fa-tag"></i> iOS</a>
           
-            <a href="/tags/webView/" rel="tag"><i class="fa fa-tag"></i> webView</a>
-          
         </div>
       
 
@@ -508,8 +506,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/01/15/dart-constructor/" rel="next" title="理解Dart中的构造函数">
-                <i class="fa fa-chevron-left"></i> 理解Dart中的构造函数
+              <a href="/2019/01/16/ios-load-local-html/" rel="next" title="iOS webView加载本地html，并在url携带query">
+                <i class="fa fa-chevron-left"></i> iOS webView加载本地html，并在url携带query
               </a>
             
           </div>
@@ -518,8 +516,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/05/24/rutime-super/" rel="prev" title="Runtime -- super的本质">
-                Runtime -- super的本质 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/05/29/autoreleasepool/" rel="prev" title="autoreleasepool和autorelease原理探究">
+                autoreleasepool和autorelease原理探究 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -674,7 +672,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#为了加快页面的加载速度和在无网络时也能加载出来网页，所以项目把加载url的做法废弃了，把vue生成的dist文件，用webview本地加载，由于平时都是直接写url地址，所以第一次写的时候，翻了好多网上的文章，现在我只有一句话想说，大家别抄来抄去了，转发之前-自己先测试下吧。。。。。"><span class="nav-number">1.</span> <span class="nav-text">为了加快页面的加载速度和在无网络时也能加载出来网页，所以项目把加载url的做法废弃了，把vue生成的dist文件，用webview本地加载，由于平时都是直接写url地址，所以第一次写的时候，翻了好多网上的文章，现在我只有一句话想说，大家别抄来抄去了，转发之前,自己先测试下吧。。。。。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Demo"><span class="nav-number">2.</span> <span class="nav-text">Demo</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#一道面试题引发的-对于super本质的探究"><span class="nav-number">1.</span> <span class="nav-text">一道面试题引发的,对于super本质的探究</span></a></li></ol></div>
             
 
           </div>
