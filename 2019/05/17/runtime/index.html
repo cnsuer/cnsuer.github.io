@@ -107,7 +107,7 @@
 <meta property="og:image" content="http://ps77z1wgt.bkt.clouddn.com/msgSend2.png">
 <meta property="og:image" content="http://ps77z1wgt.bkt.clouddn.com/resolve.png">
 <meta property="og:image" content="http://ps77z1wgt.bkt.clouddn.com/forward.png">
-<meta property="og:updated_time" content="2019-06-02T15:23:15.957Z">
+<meta property="og:updated_time" content="2019-06-02T15:38:21.448Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="runtime消息发送的流程">
 <meta name="twitter:description" content="什么是Runtime？ OC是一门动态性比较强的编程语言，允许很多操作推迟到程序运行时再进行 OC的动态性就是由Runtime来支撑和实现的，Runtime是一套C语言的API，封装了很多动态性相关的函数 平时编写的OC代码，底层都是转换成了Runtime API进行调用  具体应用 利用关联对象（AssociatedObject）给分类添加属性 遍历类的所有成员变量（修改textfield的占位">
@@ -503,7 +503,7 @@
 <li><p>动态方法解析</p>
 <ul>
 <li><p>可以实现以下方法，来动态添加方法实现</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">+resolveInstanceMethod:</span><br><span class="line">+resolveClassMethod:</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">+resolveInstanceMethod:</span><br><span class="line">+resolveClassMethod:</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>动态解析过后，会重新走“消息发送”的流程,“从receiverClass的cache中查找方法”这一步开始执行<br><img src="http://ps77z1wgt.bkt.clouddn.com/resolve.png" alt=""></p>
 </li>
@@ -511,8 +511,16 @@
 </li>
 <li><p>消息转发</p>
 <ul>
-<li>开发者可以在forwardInvocation:方法中自定义任何逻辑,以上方法都有对象方法、类方法2个版本（前面可以是加号+，也可以是减号-）<br><img src="http://ps77z1wgt.bkt.clouddn.com/forward.png" alt=""></li>
+<li>开发者可以在forwardInvocation:方法中自定义任何逻辑,以上方法都有对象方法、类方法2个版本（前面可以是加号+，也可以是减号-）</li>
 </ul>
+</li>
+<li><p>方法签名:这一步是Runtime最后一次给你挽救的机会。</p>
+<ul>
+<li>首先它会发送-methodSignatureForSelector:消息获得函数的参数和返回值类型。</li>
+<li>如果-methodSignatureForSelector:返回nil，Runtime则会发出-doesNotRecognizeSelector:消息，程序这时也就挂掉了。</li>
+<li>如果返回了一个函数签名，Runtime就会创建一个NSInvocation对象并发送-forwardInvocation:消息给目标对象。</li>
+</ul>
+<p><img src="http://ps77z1wgt.bkt.clouddn.com/forward.png" alt=""></p>
 </li>
 </ol>
 
