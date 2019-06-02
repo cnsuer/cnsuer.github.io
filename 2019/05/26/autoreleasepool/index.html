@@ -96,19 +96,19 @@
 
 
 
-  <meta name="description" content="前段时间离职了,现在终于有时间来了解些以前一直没有弄懂的知识了,啥也不说了,失业才是第一生产力,啊哈哈哈哈哈。。。。。先把项目改为MRC,在main.m中写如下代码.123456int main(int argc, const char * argv[]) &amp;#123;	@autoreleasepool &amp;#123;		__unused RTStudent *stu = [[[RTStudent">
+  <meta name="description" content="先把项目改为MRC,在main.m中写如下代码.123456int main(int argc, const char * argv[]) &amp;#123;	@autoreleasepool &amp;#123;		__unused RTStudent *stu = [[[RTStudent alloc] init] autorelease];	&amp;#125;	return 0;&amp;#125; 使用xcrun -">
 <meta name="keywords" content="iOS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="autoreleasepool和autorelease原理探究">
-<meta property="og:url" content="https://notes.restver.me/2019/05/29/autoreleasepool/index.html">
+<meta property="og:url" content="https://notes.restver.me/2019/05/26/autoreleasepool/index.html">
 <meta property="og:site_name" content="Restver&#39;s Notes">
-<meta property="og:description" content="前段时间离职了,现在终于有时间来了解些以前一直没有弄懂的知识了,啥也不说了,失业才是第一生产力,啊哈哈哈哈哈。。。。。先把项目改为MRC,在main.m中写如下代码.123456int main(int argc, const char * argv[]) &amp;#123;	@autoreleasepool &amp;#123;		__unused RTStudent *stu = [[[RTStudent">
+<meta property="og:description" content="先把项目改为MRC,在main.m中写如下代码.123456int main(int argc, const char * argv[]) &amp;#123;	@autoreleasepool &amp;#123;		__unused RTStudent *stu = [[[RTStudent alloc] init] autorelease];	&amp;#125;	return 0;&amp;#125; 使用xcrun -">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://ps77z1wgt.bkt.clouddn.com/autoreleasePoolPage.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/600">
-<meta property="og:updated_time" content="2019-05-29T10:46:48.731Z">
+<meta property="og:updated_time" content="2019-06-02T12:29:23.005Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="autoreleasepool和autorelease原理探究">
-<meta name="twitter:description" content="前段时间离职了,现在终于有时间来了解些以前一直没有弄懂的知识了,啥也不说了,失业才是第一生产力,啊哈哈哈哈哈。。。。。先把项目改为MRC,在main.m中写如下代码.123456int main(int argc, const char * argv[]) &amp;#123;	@autoreleasepool &amp;#123;		__unused RTStudent *stu = [[[RTStudent">
+<meta name="twitter:description" content="先把项目改为MRC,在main.m中写如下代码.123456int main(int argc, const char * argv[]) &amp;#123;	@autoreleasepool &amp;#123;		__unused RTStudent *stu = [[[RTStudent alloc] init] autorelease];	&amp;#125;	return 0;&amp;#125; 使用xcrun -">
 <meta name="twitter:image" content="http://ps77z1wgt.bkt.clouddn.com/autoreleasePoolPage.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/600">
 
 
@@ -116,7 +116,7 @@
 
 
 
-  <link rel="canonical" href="https://notes.restver.me/2019/05/29/autoreleasepool/">
+  <link rel="canonical" href="https://notes.restver.me/2019/05/26/autoreleasepool/">
 
 
 
@@ -335,7 +335,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://notes.restver.me/2019/05/29/autoreleasepool/">
+    <link itemprop="mainEntityOfPage" href="https://notes.restver.me/2019/05/26/autoreleasepool/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="restver">
@@ -378,7 +378,7 @@
                 
               
 
-              <time title="创建时间：2019-05-29 18:36:24" itemprop="dateCreated datePublished" datetime="2019-05-29T18:36:24+08:00">2019-05-29</time>
+              <time title="创建时间：2019-05-26 18:36:24" itemprop="dateCreated datePublished" datetime="2019-05-26T18:36:24+08:00">2019-05-26</time>
             
 
             
@@ -414,8 +414,8 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
             
-                <a href="/2019/05/29/autoreleasepool/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/05/29/autoreleasepool/" itemprop="commentCount"></span>
+                <a href="/2019/05/26/autoreleasepool/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/05/26/autoreleasepool/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -423,7 +423,7 @@
 
           
           
-            <span id="/2019/05/29/autoreleasepool/" class="leancloud_visitors" data-flag-title="autoreleasepool和autorelease原理探究">
+            <span id="/2019/05/26/autoreleasepool/" class="leancloud_visitors" data-flag-title="autoreleasepool和autorelease原理探究">
               <span class="post-meta-divider">|</span>
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
@@ -454,7 +454,7 @@
       
 
       
-        <h4 id="前段时间离职了-现在终于有时间来了解些以前一直没有弄懂的知识了-啥也不说了-失业才是第一生产力-啊哈哈哈哈哈。。。。。"><a href="#前段时间离职了-现在终于有时间来了解些以前一直没有弄懂的知识了-啥也不说了-失业才是第一生产力-啊哈哈哈哈哈。。。。。" class="headerlink" title="前段时间离职了,现在终于有时间来了解些以前一直没有弄懂的知识了,啥也不说了,失业才是第一生产力,啊哈哈哈哈哈。。。。。"></a>前段时间离职了,现在终于有时间来了解些以前一直没有弄懂的知识了,啥也不说了,失业才是第一生产力,啊哈哈哈哈哈。。。。。</h4><h4 id="先把项目改为MRC-在main-m中写如下代码"><a href="#先把项目改为MRC-在main-m中写如下代码" class="headerlink" title="先把项目改为MRC,在main.m中写如下代码."></a>先把项目改为MRC,在main.m中写如下代码.</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[]) &#123;</span><br><span class="line">	<span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">		__unused RTStudent *stu = [[[RTStudent alloc] init] autorelease];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <h4 id="先把项目改为MRC-在main-m中写如下代码"><a href="#先把项目改为MRC-在main-m中写如下代码" class="headerlink" title="先把项目改为MRC,在main.m中写如下代码."></a>先把项目改为MRC,在main.m中写如下代码.</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[]) &#123;</span><br><span class="line">	<span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">		__unused RTStudent *stu = [[[RTStudent alloc] init] autorelease];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>使用<code>xcrun -sdk iphoneos clang -arch arm64 -rewrite-objc main.m</code>转为C++代码,再整理后得<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</span><br><span class="line">    &#123; </span><br><span class="line">        __AtAutoreleasePool __autoreleasepool;</span><br><span class="line">        RTStudent *stu = objc_msgSend(objc_msgSend(objc_msgSend(objc_getClass(<span class="string">"RTStudent"</span>), sel_registerName(<span class="string">"alloc"</span>)), sel_registerName(<span class="string">"init"</span>)), sel_registerName(<span class="string">"autorelease"</span>));</span><br><span class="line">    &#125;</span><br><span class="line"> <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <a id="more"></a>
 <p>其中<code>__AtAutoreleasePool</code>是一个结构体:</p>
@@ -616,7 +616,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-count">8</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -696,7 +696,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#前段时间离职了-现在终于有时间来了解些以前一直没有弄懂的知识了-啥也不说了-失业才是第一生产力-啊哈哈哈哈哈。。。。。"><span class="nav-number">1.</span> <span class="nav-text">前段时间离职了,现在终于有时间来了解些以前一直没有弄懂的知识了,啥也不说了,失业才是第一生产力,啊哈哈哈哈哈。。。。。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#先把项目改为MRC-在main-m中写如下代码"><span class="nav-number">2.</span> <span class="nav-text">先把项目改为MRC,在main.m中写如下代码.</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#那么push和pop到底做了哪些事情呢"><span class="nav-number">3.</span> <span class="nav-text">那么push和pop到底做了哪些事情呢?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#push-autorelease-pop做了哪些事情呢"><span class="nav-number">4.</span> <span class="nav-text">push,autorelease,pop做了哪些事情呢?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#打印自动释放池的信息"><span class="nav-number">5.</span> <span class="nav-text">打印自动释放池的信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#autorelease对象在什么时机会被调用release"><span class="nav-number">6.</span> <span class="nav-text">autorelease对象在什么时机会被调用release?</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#先把项目改为MRC-在main-m中写如下代码"><span class="nav-number">1.</span> <span class="nav-text">先把项目改为MRC,在main.m中写如下代码.</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#那么push和pop到底做了哪些事情呢"><span class="nav-number">2.</span> <span class="nav-text">那么push和pop到底做了哪些事情呢?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#push-autorelease-pop做了哪些事情呢"><span class="nav-number">3.</span> <span class="nav-text">push,autorelease,pop做了哪些事情呢?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#打印自动释放池的信息"><span class="nav-number">4.</span> <span class="nav-text">打印自动释放池的信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#autorelease对象在什么时机会被调用release"><span class="nav-number">5.</span> <span class="nav-text">autorelease对象在什么时机会被调用release?</span></a></li></ol></div>
             
 
           </div>

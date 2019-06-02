@@ -96,25 +96,29 @@
 
 
 
-  <meta name="description" content="一道面试题引发的,对于super本质的探究12345678910111213141516@implementation RTStudent-(instancetype)init &amp;#123;	if (self = [super init]) &amp;#123;		NSLog(@&quot;self和super调用class的结果:&quot;);		NSLog(@&quot;[self class]---%@&quot;,[self clas">
+  <meta name="description" content="什么是Runtime？ OC是一门动态性比较强的编程语言，允许很多操作推迟到程序运行时再进行 OC的动态性就是由Runtime来支撑和实现的，Runtime是一套C语言的API，封装了很多动态性相关的函数 平时编写的OC代码，底层都是转换成了Runtime API进行调用  具体应用 利用关联对象（AssociatedObject）给分类添加属性 遍历类的所有成员变量（修改textfield的占位">
 <meta name="keywords" content="iOS">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Runtime -- super的本质">
-<meta property="og:url" content="https://notes.restver.me/2019/05/24/rutime-super/index.html">
+<meta property="og:title" content="runtime消息发送的流程">
+<meta property="og:url" content="https://notes.restver.me/2019/05/17/runtime/index.html">
 <meta property="og:site_name" content="Restver&#39;s Notes">
-<meta property="og:description" content="一道面试题引发的,对于super本质的探究12345678910111213141516@implementation RTStudent-(instancetype)init &amp;#123;	if (self = [super init]) &amp;#123;		NSLog(@&quot;self和super调用class的结果:&quot;);		NSLog(@&quot;[self class]---%@&quot;,[self clas">
+<meta property="og:description" content="什么是Runtime？ OC是一门动态性比较强的编程语言，允许很多操作推迟到程序运行时再进行 OC的动态性就是由Runtime来支撑和实现的，Runtime是一套C语言的API，封装了很多动态性相关的函数 平时编写的OC代码，底层都是转换成了Runtime API进行调用  具体应用 利用关联对象（AssociatedObject）给分类添加属性 遍历类的所有成员变量（修改textfield的占位">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-05-29T11:51:07.454Z">
+<meta property="og:image" content="http://ps77z1wgt.bkt.clouddn.com/msgSend2.png">
+<meta property="og:image" content="http://ps77z1wgt.bkt.clouddn.com/resolve.png">
+<meta property="og:image" content="http://ps77z1wgt.bkt.clouddn.com/forward.png">
+<meta property="og:updated_time" content="2019-06-02T15:23:15.957Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Runtime -- super的本质">
-<meta name="twitter:description" content="一道面试题引发的,对于super本质的探究12345678910111213141516@implementation RTStudent-(instancetype)init &amp;#123;	if (self = [super init]) &amp;#123;		NSLog(@&quot;self和super调用class的结果:&quot;);		NSLog(@&quot;[self class]---%@&quot;,[self clas">
+<meta name="twitter:title" content="runtime消息发送的流程">
+<meta name="twitter:description" content="什么是Runtime？ OC是一门动态性比较强的编程语言，允许很多操作推迟到程序运行时再进行 OC的动态性就是由Runtime来支撑和实现的，Runtime是一套C语言的API，封装了很多动态性相关的函数 平时编写的OC代码，底层都是转换成了Runtime API进行调用  具体应用 利用关联对象（AssociatedObject）给分类添加属性 遍历类的所有成员变量（修改textfield的占位">
+<meta name="twitter:image" content="http://ps77z1wgt.bkt.clouddn.com/msgSend2.png">
 
 
 
 
 
 
-  <link rel="canonical" href="https://notes.restver.me/2019/05/24/rutime-super/">
+  <link rel="canonical" href="https://notes.restver.me/2019/05/17/runtime/">
 
 
 
@@ -124,7 +128,7 @@
   };
 </script>
 
-  <title>Runtime -- super的本质 | Restver's Notes</title>
+  <title>runtime消息发送的流程 | Restver's Notes</title>
   
 
 
@@ -333,7 +337,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://notes.restver.me/2019/05/24/rutime-super/">
+    <link itemprop="mainEntityOfPage" href="https://notes.restver.me/2019/05/17/runtime/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="restver">
@@ -350,7 +354,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Runtime -- super的本质
+          <h1 class="post-title" itemprop="name headline">runtime消息发送的流程
 
               
             
@@ -376,7 +380,7 @@
                 
               
 
-              <time title="创建时间：2019-05-24 13:43:39" itemprop="dateCreated datePublished" datetime="2019-05-24T13:43:39+08:00">2019-05-24</time>
+              <time title="创建时间：2019-05-17 21:19:49" itemprop="dateCreated datePublished" datetime="2019-05-17T21:19:49+08:00">2019-05-17</time>
             
 
             
@@ -412,8 +416,8 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
             
-                <a href="/2019/05/24/rutime-super/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/05/24/rutime-super/" itemprop="commentCount"></span>
+                <a href="/2019/05/17/runtime/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/05/17/runtime/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -421,7 +425,7 @@
 
           
           
-            <span id="/2019/05/24/rutime-super/" class="leancloud_visitors" data-flag-title="Runtime -- super的本质">
+            <span id="/2019/05/17/runtime/" class="leancloud_visitors" data-flag-title="runtime消息发送的流程">
               <span class="post-meta-divider">|</span>
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
@@ -452,24 +456,65 @@
       
 
       
-        <h4 id="一道面试题引发的-对于super本质的探究"><a href="#一道面试题引发的-对于super本质的探究" class="headerlink" title="一道面试题引发的,对于super本质的探究"></a>一道面试题引发的,对于super本质的探究</h4><figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">RTStudent</span></span></span><br><span class="line"></span><br><span class="line">-(<span class="keyword">instancetype</span>)init &#123;</span><br><span class="line">	<span class="keyword">if</span> (<span class="keyword">self</span> = [<span class="keyword">super</span> init]) &#123;</span><br><span class="line">		<span class="built_in">NSLog</span>(<span class="string">@"self和super调用class的结果:"</span>);</span><br><span class="line">		<span class="built_in">NSLog</span>(<span class="string">@"[self class]---%@"</span>,[<span class="keyword">self</span> <span class="keyword">class</span>]);</span><br><span class="line">		<span class="built_in">NSLog</span>(<span class="string">@"[super class]---%@"</span>,[<span class="keyword">super</span> <span class="keyword">class</span>]);</span><br><span class="line">		</span><br><span class="line">		<span class="built_in">NSLog</span>(<span class="string">@"self和super调用superclass的结果:"</span>);</span><br><span class="line">		<span class="built_in">NSLog</span>(<span class="string">@"[self superclass]---%@"</span>,[<span class="keyword">self</span> superclass]);</span><br><span class="line">		<span class="built_in">NSLog</span>(<span class="string">@"[super superclass]---%@"</span>,[<span class="keyword">super</span> superclass]);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+        <h4 id="什么是Runtime？"><a href="#什么是Runtime？" class="headerlink" title="什么是Runtime？"></a>什么是Runtime？</h4><ul>
+<li>OC是一门动态性比较强的编程语言，允许很多操作推迟到程序运行时再进行</li>
+<li>OC的动态性就是由Runtime来支撑和实现的，Runtime是一套C语言的API，封装了很多动态性相关的函数</li>
+<li>平时编写的OC代码，底层都是转换成了Runtime API进行调用</li>
+</ul>
+<h4 id="具体应用"><a href="#具体应用" class="headerlink" title="具体应用"></a>具体应用</h4><ul>
+<li>利用关联对象（AssociatedObject）给分类添加属性</li>
+<li>遍历类的所有成员变量（修改textfield的占位文字颜色、字典转模型、自动归档解档）</li>
+<li>交换方法实现（交换系统的方法）</li>
+<li>利用消息转发机制解决方法找不到的异常问题</li>
+</ul>
+<ul>
+<li>OC中的方法调用，其实都是转换为objc_msgSend函数的调用</li>
+</ul>
 <a id="more"></a>
-<p>下边的代码打印的是什么?<br><figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[]) &#123;</span><br><span class="line">	<span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">		__unused RTStudent *stu = [[RTStudent alloc] init];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>结果如下<br><figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">self</span>和<span class="keyword">super</span>调用<span class="keyword">class</span>的结果:</span><br><span class="line">[<span class="keyword">self</span> <span class="keyword">class</span>]---RTStudent</span><br><span class="line">[<span class="keyword">super</span> <span class="keyword">class</span>]---RTStudent</span><br><span class="line"></span><br><span class="line"><span class="keyword">self</span>和<span class="keyword">super</span>调用superclass的结果:</span><br><span class="line">[<span class="keyword">self</span> superclass]---RTPerson</span><br><span class="line">[<span class="keyword">super</span> superclass]---RTPerson</span><br></pre></td></tr></table></figure></p>
-<p>为什么是这样的结果呢?<code>super</code>到底是怎么来发消息的?做一个测试:<br><figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">RTStudent</span></span></span><br><span class="line">-(<span class="keyword">void</span>)run&#123;</span><br><span class="line">	[<span class="keyword">super</span> run];</span><br><span class="line">	<span class="built_in">NSLog</span>(<span class="string">@"RTStudent--run"</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure></p>
-<p>运行命令<code>xcrun -sdk iphoneos clang -arch arm64 -rewrite-objc RTStudent.m</code>将<code>RTStudent.m</code>转为<code>c++</code>文件,去掉打印和类型强转后为:<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> _I_RTStudent_run(RTStudent * self, SEL _cmd) &#123;</span><br><span class="line"> objc_msgSendSuper)((__rw_objc_super)&#123;(id)self, (id)class_getSuperclass(objc_getClass(<span class="string">"RTStudent"</span>))&#125;, sel_registerName(<span class="string">"run"</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>第一个参数是个结构体,再次抽取后:<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> _I_RTStudent_run(RTStudent * self, SEL _cmd) &#123;</span><br><span class="line"></span><br><span class="line">__rw_objc_super arg = &#123;</span><br><span class="line">(id)self,</span><br><span class="line">(id)class_getSuperclass(objc_getClass(<span class="string">"RTStudent"</span>))</span><br><span class="line">&#125;</span><br><span class="line">objc_msgSendSuper(arg, sel_registerName(<span class="string">"run"</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>将runtime函数转为oc:<br><figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">class_getSuperclass(objc_getClass(<span class="string">"RTStudent"</span>)) ==&gt; [RTPerson <span class="keyword">class</span>]</span><br><span class="line"></span><br><span class="line">sel_registerName(<span class="string">"run"</span>) ==&gt; <span class="keyword">@selector</span>(run)</span><br></pre></td></tr></table></figure></p>
-<p>最终为:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">static void _I_RTStudent_run(RTStudent * self, SEL _cmd) &#123;</span><br><span class="line"></span><br><span class="line">__rw_objc_super arg = &#123;self, [RTPerson class]&#125;</span><br><span class="line">objc_msgSendSuper(arg, @selector(run));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>在runtime源码中找到<code>objc_super</code>结构体定义:<br><figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// Specifies the superclass of an instance. </span></span><br><span class="line"><span class="keyword">struct</span> objc_super &#123;</span><br><span class="line"><span class="keyword">id</span> receiver; <span class="comment">//消息接受者</span></span><br><span class="line">Class super_class; <span class="comment">//消息接受者父类</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p><code>objc_msgSendSuper</code>方法定义为:<br><figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">objc_msgSendSuper(<span class="keyword">struct</span> objc_super * <span class="keyword">super</span>, SEL op, ...)</span><br></pre></td></tr></table></figure></p>
-<p>有文档<code>including the instance of the class that is to receive the message and the superclass at which to start searching for the method implementation</code>可知方法的接收者为结构体中的<code>receiver</code>,查找方法的时候从结构体中的<code>super_class</code>开始,而clas的方法实现为<br><figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (Class)<span class="keyword">class</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> object_getClass(<span class="keyword">self</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>所以<code>object_getClass(self)</code>中的<code>self</code>就是<code>objc_super</code>这个结构体中的<code>receiver</code>,所以<code>[self class]</code>会和<code>[super class]</code>的一样</p>
-<p>以上只是转为c++代码的分析,实际通过打断点查看汇编代码发现,调用的函数是<code>objc_msgSendSuper2</code>(源码在objc-msg-arm64.s文件中,查看函数实现)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">0x100000c0c &lt;+28&gt;: movq   0x6d5(%rip), %rsi         ; (void *)0x0000000100001340: RTStudent</span><br><span class="line">0x100000c13 &lt;+35&gt;: movq   %rsi, -0x18(%rbp)</span><br><span class="line">0x100000c17 &lt;+39&gt;: movq   0x69a(%rip), %rsi         ; &quot;run&quot;</span><br><span class="line">0x100000c1e &lt;+46&gt;: movq   %rax, %rdi</span><br><span class="line">0x100000c21 &lt;+49&gt;: callq  0x100000e54               ; symbol stub for: objc_msgSendSuper2</span><br><span class="line">0x100000c26 &lt;+54&gt;: leaq   0x41b(%rip), %rax         ; @&quot;RTStudent--run&quot;</span><br></pre></td></tr></table></figure></p>
-<p>而且传入的结构体是<code>objc_super2</code><br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> objc_super2 &#123;</span><br><span class="line">    <span class="keyword">id</span> receiver;</span><br><span class="line">    Class current_class;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>可以看到第二个变量变为<code>current_class</code>了,那么查找方法时会在当前类对象里查找吗?<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ldr	p16, [x16, #SUPERCLASS]	// p16 = class-&gt;superclass</span><br></pre></td></tr></table></figure></p>
-<p>在<code>objc_msgSendSuper2</code>源码中,发现这句注释<code>class-&gt;superclass</code>,所以最终它还是会直接从父类对象中查找方法</p>
-<p><a href="https://opensource.apple.com/tarballs/objc4/" title="Runtime源码地址" target="_blank" rel="noopener">Runtime源码地址</a></p>
+<h4 id="objc-msgSend的执行流程可以分为3大阶段"><a href="#objc-msgSend的执行流程可以分为3大阶段" class="headerlink" title="objc_msgSend的执行流程可以分为3大阶段"></a>objc_msgSend的执行流程可以分为3大阶段</h4><ol>
+<li><p>消息发送阶段</p>
+<ul>
+<li><p>objc-msg-arm64.s: _objc_msgSend</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">ENTRY</span> _objc_msgSend</span><br><span class="line"><span class="symbol">UNWIND</span> _objc_msgSend, NoFrame</span><br><span class="line"></span><br><span class="line">//<span class="built_in">p0</span>就是receiver</span><br><span class="line"><span class="keyword">cmp	</span><span class="built_in">p0</span>, <span class="number">#0</span>			// nil check <span class="keyword">and </span>tagged pointer check</span><br><span class="line"><span class="symbol">#if</span> SUPPORT_TAGGED_POINTERS</span><br><span class="line">  //检查receiver,是否为nil,是的话,跳到LNilOrTagged</span><br><span class="line">  <span class="keyword">b.le	</span>LNilOrTagged		//  (MSB tagged pointer looks negative) </span><br><span class="line"><span class="symbol">#else</span></span><br><span class="line">  <span class="keyword">b.eq	</span>LReturnZero</span><br><span class="line"><span class="symbol">#endif</span></span><br><span class="line">  <span class="keyword">ldr	</span><span class="built_in">p13</span>, [x0]		// <span class="built_in">p13</span> = isa</span><br><span class="line">  GetClassFromIsa_p16 <span class="built_in">p13</span>		// p16 = class</span><br><span class="line"><span class="symbol">LGetIsaDone</span>:</span><br><span class="line">  //执行CacheLookup</span><br><span class="line">  CacheLookup NORMAL		// calls imp or objc_msgSend_uncached</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>objc-msg-arm64.s: .macro CacheLookup</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">  ldp	p17, <span class="built_in">p9</span>, [x12]		// &#123;imp, <span class="keyword">sel&#125; </span>= *<span class="keyword">bucket</span></span><br><span class="line"><span class="keyword">1:	</span><span class="keyword">cmp	</span><span class="built_in">p9</span>, <span class="built_in">p1</span>			// <span class="meta">if</span> (<span class="keyword">bucket-&gt;sel </span>!= _cmd)</span><br><span class="line">  <span class="keyword">b.ne	</span><span class="number">2</span>f			//     scan more</span><br><span class="line">  CacheHit <span class="number">$0</span>			// call or return imp</span><br><span class="line">  </span><br><span class="line">//如果缓存中没有查找到,会执行CheckMiss</span><br><span class="line"><span class="number">2</span>:	// not hit: <span class="built_in">p12</span> = not-hit <span class="keyword">bucket</span></span><br><span class="line"><span class="keyword"> </span> CheckMiss <span class="number">$0</span>			// miss <span class="meta">if</span> <span class="keyword">bucket-&gt;sel </span>== <span class="number">0</span></span><br><span class="line">  <span class="keyword">cmp	</span><span class="built_in">p12</span>, <span class="built_in">p10</span>		// wrap <span class="meta">if</span> <span class="keyword">bucket </span>== <span class="keyword">buckets</span></span><br><span class="line"><span class="keyword"> </span> <span class="keyword">b.eq	</span><span class="number">3</span>f</span><br><span class="line">  ldp	p17, <span class="built_in">p9</span>, [x12, #-<span class="keyword">BUCKET_SIZE]!	</span>// &#123;imp, <span class="keyword">sel&#125; </span>= *--<span class="keyword">bucket</span></span><br><span class="line"><span class="keyword"> </span> <span class="keyword">b	</span><span class="number">1</span>b			// loop</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>objc-msg-arm64.s: .macro CheckMiss  &amp;&amp; __objc_msgSend_uncached</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">  // miss <span class="meta">if</span> <span class="keyword">bucket-&gt;sel </span>== <span class="number">0</span></span><br><span class="line"><span class="symbol">.if</span> <span class="number">$0</span> == GETIMP</span><br><span class="line">  <span class="keyword">cbz	</span><span class="built_in">p9</span>, LGetImpMiss</span><br><span class="line"><span class="symbol">.elseif</span> <span class="number">$0</span> == NORMAL //因为<span class="number">$0</span> == NORMAL</span><br><span class="line">  <span class="keyword">cbz	</span><span class="built_in">p9</span>, __objc_msgSend_uncached</span><br><span class="line"><span class="symbol">.elseif</span> <span class="number">$0</span> == LOOKUP</span><br><span class="line">  <span class="keyword">cbz	</span><span class="built_in">p9</span>, __objc_msgLookup_uncached</span><br><span class="line"><span class="symbol">.else</span></span><br><span class="line"><span class="symbol">.abort</span> oops</span><br><span class="line"><span class="symbol">.endif</span></span><br><span class="line"><span class="symbol">.endmacro</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>objc-msg-arm64.s: __objc_msgLookup_uncached  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.......</span><br><span class="line"></span><br><span class="line">MethodTableLookup</span><br><span class="line"></span><br><span class="line">........</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>objc-msg-arm64.s: .macro MethodTableLookup</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.......</span><br><span class="line"></span><br><span class="line">bl	__class_lookupMethodAndLoadCache3</span><br><span class="line"></span><br><span class="line">........</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>objc-runtime-new.mm: __class_lookupMethodAndLoadCache3</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">IMP _class_lookupMethodAndLoadCache3(<span class="keyword">id</span> obj, SEL sel, Class cls)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> lookUpImpOrForward(cls, sel, obj, </span><br><span class="line">                              <span class="literal">YES</span><span class="comment">/*initialize*/</span>, <span class="literal">NO</span><span class="comment">/*cache*/</span>, <span class="literal">YES</span><span class="comment">/*resolver*/</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>objc-runtime-new.mm: lookUpImpOrForward</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">IMP lookUpImpOrNil(Class cls, SEL sel, <span class="keyword">id</span> inst, <span class="keyword">bool</span> initialize, <span class="keyword">bool</span> cache, <span class="keyword">bool</span> resolver)() &#123;</span><br><span class="line">  IMP imp = lookUpImpOrForward(cls, sel, inst, initialize, cache, resolver);</span><br><span class="line">  <span class="keyword">if</span> (imp == _objc_msgForward_impcache) <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">return</span> imp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>根据sel查找IMP: <a href="https://notes.restver.me/2019/05/20/check-method/" title="根据sel查找IMP的过程">根据sel查找IMP的过程</a> </p>
+<p><img src="http://ps77z1wgt.bkt.clouddn.com/msgSend2.png" alt=""></p>
+</li>
+</ul>
+</li>
+<li><p>动态方法解析</p>
+<ul>
+<li><p>可以实现以下方法，来动态添加方法实现</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">+resolveInstanceMethod:</span><br><span class="line">+resolveClassMethod:</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>动态解析过后，会重新走“消息发送”的流程,“从receiverClass的cache中查找方法”这一步开始执行<br><img src="http://ps77z1wgt.bkt.clouddn.com/resolve.png" alt=""></p>
+</li>
+</ul>
+</li>
+<li><p>消息转发</p>
+<ul>
+<li>开发者可以在forwardInvocation:方法中自定义任何逻辑,以上方法都有对象方法、类方法2个版本（前面可以是加号+，也可以是减号-）<br><img src="http://ps77z1wgt.bkt.clouddn.com/forward.png" alt=""></li>
+</ul>
+</li>
+</ol>
 
       
     </div>
@@ -506,8 +551,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/05/20/check-method/" rel="next" title="runtime如何通过selector找到对应的IMP地址的？">
-                <i class="fa fa-chevron-left"></i> runtime如何通过selector找到对应的IMP地址的？
+              <a href="/2019/01/16/ios-load-local-html/" rel="next" title="iOS webView加载本地html，并在url携带query">
+                <i class="fa fa-chevron-left"></i> iOS webView加载本地html，并在url携带query
               </a>
             
           </div>
@@ -516,8 +561,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/05/26/autoreleasepool/" rel="prev" title="autoreleasepool和autorelease原理探究">
-                autoreleasepool和autorelease原理探究 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/05/20/check-method/" rel="prev" title="runtime如何通过selector找到对应的IMP地址的？">
+                runtime如何通过selector找到对应的IMP地址的？ <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -672,7 +717,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#一道面试题引发的-对于super本质的探究"><span class="nav-number">1.</span> <span class="nav-text">一道面试题引发的,对于super本质的探究</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#什么是Runtime？"><span class="nav-number">1.</span> <span class="nav-text">什么是Runtime？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#具体应用"><span class="nav-number">2.</span> <span class="nav-text">具体应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#objc-msgSend的执行流程可以分为3大阶段"><span class="nav-number">3.</span> <span class="nav-text">objc_msgSend的执行流程可以分为3大阶段</span></a></li></ol></div>
             
 
           </div>

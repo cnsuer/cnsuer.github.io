@@ -16,7 +16,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-CN">
 <head>
-  <meta name="google-site-verification" content="pfYs602N_4i4qdPPy5J-oxmNXaQy7K_3LjkHzEwsphs" />
+  <meta name="google-site-verification" content="pfYs602N_4i4qdPPy5J-oxmNXaQy7K_3LjkHzEwsphs" />  
   <meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -335,7 +335,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://notes.restver.me/2019/05/29/autoreleasepool/">
+    <link itemprop="mainEntityOfPage" href="https://notes.restver.me/2019/05/26/autoreleasepool/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="restver">
@@ -355,7 +355,7 @@
           <h1 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/2019/05/29/autoreleasepool/" class="post-title-link" itemprop="url">autoreleasepool和autorelease原理探究</a>
+                <a href="/2019/05/26/autoreleasepool/" class="post-title-link" itemprop="url">autoreleasepool和autorelease原理探究</a>
               
             
           </h1>
@@ -380,7 +380,7 @@
                 
               
 
-              <time title="创建时间：2019-05-29 18:36:24" itemprop="dateCreated datePublished" datetime="2019-05-29T18:36:24+08:00">2019-05-29</time>
+              <time title="创建时间：2019-05-26 18:36:24" itemprop="dateCreated datePublished" datetime="2019-05-26T18:36:24+08:00">2019-05-26</time>
             
 
             
@@ -416,8 +416,8 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
             
-                <a href="/2019/05/29/autoreleasepool/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/05/29/autoreleasepool/" itemprop="commentCount"></span>
+                <a href="/2019/05/26/autoreleasepool/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/05/26/autoreleasepool/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -425,7 +425,7 @@
 
           
           
-            <span id="/2019/05/29/autoreleasepool/" class="leancloud_visitors" data-flag-title="autoreleasepool和autorelease原理探究">
+            <span id="/2019/05/26/autoreleasepool/" class="leancloud_visitors" data-flag-title="autoreleasepool和autorelease原理探究">
               <span class="post-meta-divider">|</span>
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
@@ -457,12 +457,12 @@
 
       
         
-          <h4 id="前段时间离职了-现在终于有时间来了解些以前一直没有弄懂的知识了-啥也不说了-失业才是第一生产力-啊哈哈哈哈哈。。。。。"><a href="#前段时间离职了-现在终于有时间来了解些以前一直没有弄懂的知识了-啥也不说了-失业才是第一生产力-啊哈哈哈哈哈。。。。。" class="headerlink" title="前段时间离职了,现在终于有时间来了解些以前一直没有弄懂的知识了,啥也不说了,失业才是第一生产力,啊哈哈哈哈哈。。。。。"></a>前段时间离职了,现在终于有时间来了解些以前一直没有弄懂的知识了,啥也不说了,失业才是第一生产力,啊哈哈哈哈哈。。。。。</h4><h4 id="先把项目改为MRC-在main-m中写如下代码"><a href="#先把项目改为MRC-在main-m中写如下代码" class="headerlink" title="先把项目改为MRC,在main.m中写如下代码."></a>先把项目改为MRC,在main.m中写如下代码.</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[]) &#123;</span><br><span class="line">	<span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">		__unused RTStudent *stu = [[[RTStudent alloc] init] autorelease];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          <h4 id="先把项目改为MRC-在main-m中写如下代码"><a href="#先把项目改为MRC-在main-m中写如下代码" class="headerlink" title="先把项目改为MRC,在main.m中写如下代码."></a>先把项目改为MRC,在main.m中写如下代码.</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[]) &#123;</span><br><span class="line">	<span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">		__unused RTStudent *stu = [[[RTStudent alloc] init] autorelease];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>使用<code>xcrun -sdk iphoneos clang -arch arm64 -rewrite-objc main.m</code>转为C++代码,再整理后得<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</span><br><span class="line">    &#123; </span><br><span class="line">        __AtAutoreleasePool __autoreleasepool;</span><br><span class="line">        RTStudent *stu = objc_msgSend(objc_msgSend(objc_msgSend(objc_getClass(<span class="string">"RTStudent"</span>), sel_registerName(<span class="string">"alloc"</span>)), sel_registerName(<span class="string">"init"</span>)), sel_registerName(<span class="string">"autorelease"</span>));</span><br><span class="line">    &#125;</span><br><span class="line"> <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
           <!--noindex-->
           
             <div class="post-button text-center">
-              <a class="btn" href="/2019/05/29/autoreleasepool/#more" rel="contents">
+              <a class="btn" href="/2019/05/26/autoreleasepool/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -649,6 +649,402 @@
           
             <div class="post-button text-center">
               <a class="btn" href="/2019/05/24/rutime-super/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://notes.restver.me/2019/05/20/check-method/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="restver">
+      <meta itemprop="description" content="restver's ios&web notes">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Restver's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/05/20/check-method/" class="post-title-link" itemprop="url">runtime如何通过selector找到对应的IMP地址的？</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-20 13:20:07" itemprop="dateCreated datePublished" datetime="2019-05-20T13:20:07+08:00">2019-05-20</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <a href="/2019/05/20/check-method/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/05/20/check-method/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2019/05/20/check-method/" class="leancloud_visitors" data-flag-title="runtime如何通过selector找到对应的IMP地址的？">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h4 id="runtime如何通过selector找到对应的IMP地址"><a href="#runtime如何通过selector找到对应的IMP地址" class="headerlink" title="runtime如何通过selector找到对应的IMP地址"></a>runtime如何通过selector找到对应的IMP地址</h4><ul>
+<li><p>SEL代表方法(函数名)，一般叫做选择器，底层结构跟char *类似</p>
+<ul>
+<li>可以通过@selector()和sel_registerName()获得</li>
+<li>可以通过sel_getName()和NSStringFromSelector()转成字符串</li>
+<li>不同类中相同名字的方法，所对应的方法选择器是相同的</li>
+</ul>
+</li>
+<li><p>method_t的数据结构</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> method_t &#123;</span><br><span class="line">    SEL name;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *types;</span><br><span class="line">    MethodListIMP imp;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">struct</span> SortBySELAddress :</span><br><span class="line">        public std::binary_function&lt;<span class="keyword">const</span> method_t&amp;,</span><br><span class="line">                                    <span class="keyword">const</span> method_t&amp;, <span class="keyword">bool</span>&gt;</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">bool</span> operator() (<span class="keyword">const</span> method_t&amp; lhs,</span><br><span class="line">                        <span class="keyword">const</span> method_t&amp; rhs)</span><br><span class="line">        &#123; <span class="keyword">return</span> lhs.name &lt; rhs.name; &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/05/20/check-method/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://notes.restver.me/2019/05/17/runtime/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="restver">
+      <meta itemprop="description" content="restver's ios&web notes">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Restver's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/05/17/runtime/" class="post-title-link" itemprop="url">runtime消息发送的流程</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-17 21:19:49" itemprop="dateCreated datePublished" datetime="2019-05-17T21:19:49+08:00">2019-05-17</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <a href="/2019/05/17/runtime/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/05/17/runtime/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2019/05/17/runtime/" class="leancloud_visitors" data-flag-title="runtime消息发送的流程">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h4 id="什么是Runtime？"><a href="#什么是Runtime？" class="headerlink" title="什么是Runtime？"></a>什么是Runtime？</h4><ul>
+<li>OC是一门动态性比较强的编程语言，允许很多操作推迟到程序运行时再进行</li>
+<li>OC的动态性就是由Runtime来支撑和实现的，Runtime是一套C语言的API，封装了很多动态性相关的函数</li>
+<li>平时编写的OC代码，底层都是转换成了Runtime API进行调用</li>
+</ul>
+<h4 id="具体应用"><a href="#具体应用" class="headerlink" title="具体应用"></a>具体应用</h4><ul>
+<li>利用关联对象（AssociatedObject）给分类添加属性</li>
+<li>遍历类的所有成员变量（修改textfield的占位文字颜色、字典转模型、自动归档解档）</li>
+<li>交换方法实现（交换系统的方法）</li>
+<li>利用消息转发机制解决方法找不到的异常问题</li>
+</ul>
+<ul>
+<li>OC中的方法调用，其实都是转换为objc_msgSend函数的调用</li>
+</ul>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/05/17/runtime/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1494,7 +1890,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-count">8</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

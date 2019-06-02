@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://notes.restver.me/2019/05/24/rutime-super/</loc>
-    <lastmod>2019-05-29</lastmod>
+    <loc>https://notes.restver.me/2019/05/17/runtime/</loc>
+    <lastmod>2019-06-02</lastmod>
   </url>  <url>
-    <loc>https://notes.restver.me/2019/05/29/autoreleasepool/</loc>
+    <loc>https://notes.restver.me/2019/05/20/check-method/</loc>
+    <lastmod>2019-06-02</lastmod>
+  </url>  <url>
+    <loc>https://notes.restver.me/2019/05/26/autoreleasepool/</loc>
+    <lastmod>2019-06-02</lastmod>
+  </url>  <url>
+    <loc>https://notes.restver.me/2019/05/24/rutime-super/</loc>
     <lastmod>2019-05-29</lastmod>
   </url>  <url>
     <loc>https://notes.restver.me/2019/01/15/dart-constructor/</loc>

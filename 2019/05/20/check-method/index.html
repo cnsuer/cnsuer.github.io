@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"hide","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="runtime如何通过selector找到对应的IMP地址 SEL代表方法(函数名)，一般叫做选择器，底层结构跟char *类似  可以通过@selector()和sel_registerName()获得 可以通过sel_getName()和NSStringFromSelector()转成字符串 不同类中相同名字的方法，所对应的方法选择器是相同的   method_t的数据结构 123456789">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="runtime如何通过selector找到对应的IMP地址的？">
+<meta property="og:url" content="https://notes.restver.me/2019/05/20/check-method/index.html">
+<meta property="og:site_name" content="Restver&#39;s Notes">
+<meta property="og:description" content="runtime如何通过selector找到对应的IMP地址 SEL代表方法(函数名)，一般叫做选择器，底层结构跟char *类似  可以通过@selector()和sel_registerName()获得 可以通过sel_getName()和NSStringFromSelector()转成字符串 不同类中相同名字的方法，所对应的方法选择器是相同的   method_t的数据结构 123456789">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-06-02T15:10:18.891Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="runtime如何通过selector找到对应的IMP地址的？">
+<meta name="twitter:description" content="runtime如何通过selector找到对应的IMP地址 SEL代表方法(函数名)，一般叫做选择器，底层结构跟char *类似  可以通过@selector()和sel_registerName()获得 可以通过sel_getName()和NSStringFromSelector()转成字符串 不同类中相同名字的方法，所对应的方法选择器是相同的   method_t的数据结构 123456789">
+
+
+
+
+
+
+  <link rel="canonical" href="https://notes.restver.me/2019/05/20/check-method/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>runtime如何通过selector找到对应的IMP地址的？ | Restver's Notes</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?511cd6b2f38950375566e198e94410e2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Restver's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://notes.restver.me/2019/05/20/check-method/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="restver">
+      <meta itemprop="description" content="restver's ios&web notes">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Restver's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">runtime如何通过selector找到对应的IMP地址的？
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-20 13:20:07" itemprop="dateCreated datePublished" datetime="2019-05-20T13:20:07+08:00">2019-05-20</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <a href="/2019/05/20/check-method/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/05/20/check-method/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2019/05/20/check-method/" class="leancloud_visitors" data-flag-title="runtime如何通过selector找到对应的IMP地址的？">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="runtime如何通过selector找到对应的IMP地址"><a href="#runtime如何通过selector找到对应的IMP地址" class="headerlink" title="runtime如何通过selector找到对应的IMP地址"></a>runtime如何通过selector找到对应的IMP地址</h4><ul>
+<li><p>SEL代表方法(函数名)，一般叫做选择器，底层结构跟char *类似</p>
+<ul>
+<li>可以通过@selector()和sel_registerName()获得</li>
+<li>可以通过sel_getName()和NSStringFromSelector()转成字符串</li>
+<li>不同类中相同名字的方法，所对应的方法选择器是相同的</li>
+</ul>
+</li>
+<li><p>method_t的数据结构</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> method_t &#123;</span><br><span class="line">    SEL name;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *types;</span><br><span class="line">    MethodListIMP imp;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">struct</span> SortBySELAddress :</span><br><span class="line">        public std::binary_function&lt;<span class="keyword">const</span> method_t&amp;,</span><br><span class="line">                                    <span class="keyword">const</span> method_t&amp;, <span class="keyword">bool</span>&gt;</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">bool</span> operator() (<span class="keyword">const</span> method_t&amp; lhs,</span><br><span class="line">                        <span class="keyword">const</span> method_t&amp; rhs)</span><br><span class="line">        &#123; <span class="keyword">return</span> lhs.name &lt; rhs.name; &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<a id="more"></a>
+<ul>
+<li>查找IMP的具体函数class_getMethodImplementation</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">IMP class_getMethodImplementation(Class cls, SEL sel)</span><br><span class="line">&#123;</span><br><span class="line">    IMP imp;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!cls  ||  !sel) <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line"></span><br><span class="line">    imp = lookUpImpOrNil(cls, sel, <span class="literal">nil</span>, </span><br><span class="line">                         <span class="literal">YES</span><span class="comment">/*initialize*/</span>, <span class="literal">YES</span><span class="comment">/*cache*/</span>, <span class="literal">YES</span><span class="comment">/*resolver*/</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Translate forwarding function to C-callable external version</span></span><br><span class="line">    <span class="keyword">if</span> (!imp) &#123;</span><br><span class="line">        <span class="keyword">return</span> _objc_msgForward;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> imp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line">IMP lookUpImpOrNil(Class cls, SEL sel, <span class="keyword">id</span> inst, </span><br><span class="line">                   <span class="keyword">bool</span> initialize, <span class="keyword">bool</span> cache, <span class="keyword">bool</span> resolver)</span><br><span class="line">&#123;</span><br><span class="line">    IMP imp = lookUpImpOrForward(cls, sel, inst, initialize, cache, resolver);</span><br><span class="line">    <span class="keyword">if</span> (imp == _objc_msgForward_impcache) <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> imp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">IMP lookUpImpOrForward(Class cls, SEL sel, <span class="keyword">id</span> inst, </span><br><span class="line">                       <span class="keyword">bool</span> initialize, <span class="keyword">bool</span> cache, <span class="keyword">bool</span> resolver)</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Optimistic cache lookup,</span></span><br><span class="line">    <span class="comment">//根据cache参数,决定是否尝试着从本类对象的方法缓存列表中查找</span></span><br><span class="line">    <span class="keyword">if</span> (cache) &#123;</span><br><span class="line">        imp = cache_getImp(cls, sel);</span><br><span class="line">        <span class="keyword">if</span> (imp) <span class="keyword">return</span> imp;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"> retry:    </span><br><span class="line">    runtimeLock.assertLocked();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Try this class's cache.</span></span><br><span class="line">    imp = cache_getImp(cls, sel);</span><br><span class="line">    <span class="keyword">if</span> (imp) <span class="keyword">goto</span> done; <span class="comment">//跳到done语句标号执行</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Try this class's method lists.从本类的方法列表中查找</span></span><br><span class="line">    &#123;</span><br><span class="line">        Method meth = getMethodNoSuper_nolock(cls, sel);</span><br><span class="line">        <span class="keyword">if</span> (meth) &#123;</span><br><span class="line">            log_and_fill_cache(cls, meth-&gt;imp, sel, inst, cls); <span class="comment">//如果找到了,把它加入方法缓存列表中</span></span><br><span class="line">            imp = meth-&gt;imp;</span><br><span class="line">            <span class="keyword">goto</span> done; .<span class="comment">//跳到done语句标号执行</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Try superclass caches and method lists.</span></span><br><span class="line">    <span class="comment">//如果本类中未查到,就循环从父类的方法缓存列表或者方法列表中查找(直到父类为nil)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">unsigned</span> attempts = unreasonableClassCount();</span><br><span class="line">        <span class="keyword">for</span> (Class curClass = cls-&gt;superclass;</span><br><span class="line">             curClass != <span class="literal">nil</span>;</span><br><span class="line">             curClass = curClass-&gt;superclass)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// Superclass cache.先从父类的方法缓存列表中查找</span></span><br><span class="line">            imp = cache_getImp(curClass, sel);</span><br><span class="line">            <span class="keyword">if</span> (imp) &#123;</span><br><span class="line">                <span class="keyword">if</span> (imp != (IMP)_objc_msgForward_impcache) &#123;</span><br><span class="line">                    <span class="comment">// Found the method in a superclass. Cache it in this class.</span></span><br><span class="line">                    <span class="comment">//如果找到,添加到本类的方法缓存列表中</span></span><br><span class="line">                    log_and_fill_cache(cls, imp, sel, inst, curClass); </span><br><span class="line">                    <span class="comment">//跳出循环,跳到done语句标号执行</span></span><br><span class="line">                    <span class="keyword">goto</span> done;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// Superclass method list.  </span></span><br><span class="line">            <span class="comment">//从父类的方法列表中查找</span></span><br><span class="line">            Method meth = getMethodNoSuper_nolock(curClass, sel);</span><br><span class="line">            <span class="keyword">if</span> (meth) &#123;</span><br><span class="line">                <span class="comment">//如果找到,添加到本类的方法缓存列表中</span></span><br><span class="line">                log_and_fill_cache(cls, meth-&gt;imp, sel, inst, curClass);</span><br><span class="line">                imp = meth-&gt;imp;</span><br><span class="line">                <span class="comment">//跳出循环,跳到done语句标号执行</span></span><br><span class="line">                <span class="keyword">goto</span> done;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// No implementation found. Try method resolver once.</span></span><br><span class="line">    <span class="comment">// 如果该类及所有的父类都没有实现该方法,并且是第一次查找该类是否动态添加了方法,objc运行时会调用+resolveInstanceMethod:或者 +resolveClassMethod:</span></span><br><span class="line">    <span class="keyword">if</span> (resolver  &amp;&amp;  !triedResolver) &#123;</span><br><span class="line">        runtimeLock.unlock();</span><br><span class="line">        _class_resolveMethod(cls, sel, inst); <span class="comment">//objc运行时会调用+resolveInstanceMethod:或者 +resolveClassMethod:,如果</span></span><br><span class="line">        runtimeLock.lock();</span><br><span class="line">        <span class="comment">// Don't cache the result; we don't hold the lock so it may have </span></span><br><span class="line">        <span class="comment">// changed already. Re-do the search from scratch instead.</span></span><br><span class="line">        triedResolver = <span class="literal">YES</span>; <span class="comment">//标记为YES,下次不再执行此步骤</span></span><br><span class="line">        <span class="keyword">goto</span> retry; <span class="comment">//跳到retry语句标号执行,重新从缓存中开始查找</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// No implementation found, and method resolver didn't help. </span></span><br><span class="line">    <span class="comment">// Use forwarding.</span></span><br><span class="line">    <span class="comment">//如果以上都没有发现实现的话,就会调用转发消息对象的方法,forwardingTargetForSelector,并把这个方法实现存到添加到本类的缓存方法列表中</span></span><br><span class="line">    imp = (IMP)_objc_msgForward_impcache;</span><br><span class="line">    cache_fill(cls, sel, imp, inst);</span><br><span class="line"></span><br><span class="line"> done:</span><br><span class="line">    runtimeLock.unlock();</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="总结-根据cls和sel查找imp的基本函数调用情况"><a href="#总结-根据cls和sel查找imp的基本函数调用情况" class="headerlink" title="总结: 根据cls和sel查找imp的基本函数调用情况"></a>总结: 根据cls和sel查找imp的基本函数调用情况</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">//先从本类的方法缓存中查找</span><br><span class="line">imp = cache_getImp(cls, sel);</span><br><span class="line">//查找本类对象中的方法列表</span><br><span class="line">getMethodNoSuper_nolock</span><br><span class="line">//根据sel查找到指定的method</span><br><span class="line">search_method_list</span><br><span class="line">//缓存到cache列表中</span><br><span class="line">log_and_fill_cache</span><br><span class="line"></span><br><span class="line">// Superclass cache</span><br><span class="line">cache_getImp</span><br><span class="line">log_and_fill_cache</span><br><span class="line"></span><br><span class="line">// Superclass method list.</span><br><span class="line">getMethodNoSuper_nolock</span><br><span class="line">log_and_fill_cache</span><br><span class="line"></span><br><span class="line">// No implementation found. Try method resolver once.</span><br><span class="line">_class_resolveInstanceMethod</span><br><span class="line"></span><br><span class="line">// No implementation found, and method resolver didn&apos;t help. </span><br><span class="line">// Use forwarding.</span><br><span class="line">_objc_msgForward_impcache</span><br><span class="line">//缓存到cache列表中</span><br><span class="line">cache_fill(cls, sel, imp, inst);</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"><i class="fa fa-tag"></i> iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/17/runtime/" rel="next" title="runtime消息发送的流程">
+                <i class="fa fa-chevron-left"></i> runtime消息发送的流程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/24/rutime-super/" rel="prev" title="Runtime -- super的本质">
+                Runtime -- super的本质 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">restver</p>
+              <p class="site-description motion-element" itemprop="description">restver's ios&web notes</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">8</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#runtime如何通过selector找到对应的IMP地址"><span class="nav-number">1.</span> <span class="nav-text">runtime如何通过selector找到对应的IMP地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结-根据cls和sel查找imp的基本函数调用情况"><span class="nav-number">2.</span> <span class="nav-text">总结: 根据cls和sel查找imp的基本函数调用情况</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">restver</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v6.7.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/three/three.min.js"></script>
+
+  
+  <script src="/lib/three/canvas_lines.min.js"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/schemes/muse.js?v=6.7.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'UA0rSPvaoDhmmyQQWnk0zdPw-gzGzoHsz',
+    appKey: '7w1DkCprF99b4yVfCeCscq5G',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+</script>
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+  
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $('.leancloud_visitors');
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
+            
+              .done(function() {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.time + 1);
+              })
+            
+              .fail(function ({ responseJSON }) {
+                console.log(`Failed to save Visitor num, with error message: ${responseJSON.error}`);
+              })
+          } else {
+            
+              Counter('post', '/classes/Counter', JSON.stringify({ title: title, url: url, time: 1 }))
+                .done(function() {
+                  var $element = $(document.getElementById(url));
+                  $element.find('.leancloud-visitors-count').text(1);
+                })
+                .fail(function() {
+                  console.log('Failed to create');
+                });
+            
+          }
+        })
+        .fail(function ({ responseJSON }) {
+          console.log(`LeanCloud Counter Error: ${responseJSON.code} ${responseJSON.error}`);
+        });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + 'UA0rSPvaoDhmmyQQWnk0zdPw-gzGzoHsz')
+        .done(function({ api_server }) {
+          var Counter = function(method, url, data) {
+            return $.ajax({
+              method: method,
+              url: 'https://' + api_server + '/1.1' + url,
+              headers: {
+                'X-LC-Id': 'UA0rSPvaoDhmmyQQWnk0zdPw-gzGzoHsz',
+                'X-LC-Key': '7w1DkCprF99b4yVfCeCscq5G',
+                'Content-Type': 'application/json',
+              },
+              data: data
+            });
+          };
+          
+            addCount(Counter);
+          
+        });
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  <!-- 页面点击小红心 -->
+  <script type="text/javascript" src="/js/src/love.js"></script>
+  
+</body>
+</html>
