@@ -96,23 +96,23 @@
 
 
 
-  <meta name="description" content="KVO的实现依赖于Runtime即当一个类型为 RTPersopn 的对象，被添加了观察后，系统会生成一个 NSKVONotifying_RTPersopn 的子类，并将对象的isa指针指向新的类，也就是说这个对象的类型发生了变化。这个类相比较于RTPersopn，会重写以下几个方法。  重写setter,在 setter 中，会调用以下方法。1_NSSetIntValueAndNotify();">
+  <meta name="description" content="KVO的实现依赖于Runtime即当一个类型为 RTPersopn 的对象，被添加了观察后，系统会生成一个 NSKVONotifying_RTPersopn 的子类，并将对象的isa指针指向新的类，也就是说这个对象的类型发生了变化。这个类相比较于RTPersopn，会重写以下几个方法。  重写setter, setter 的IMP地址就是_NSSetIntValueAndNotify这个函数的地址">
 <meta name="keywords" content="ios web vue">
 <meta property="og:type" content="article">
 <meta property="og:title" content="kvo和kvc的调用原理">
 <meta property="og:url" content="https://notes.restver.me/2019/06/04/kvo-kvc/index.html">
 <meta property="og:site_name" content="Restver&#39;s Notes">
-<meta property="og:description" content="KVO的实现依赖于Runtime即当一个类型为 RTPersopn 的对象，被添加了观察后，系统会生成一个 NSKVONotifying_RTPersopn 的子类，并将对象的isa指针指向新的类，也就是说这个对象的类型发生了变化。这个类相比较于RTPersopn，会重写以下几个方法。  重写setter,在 setter 中，会调用以下方法。1_NSSetIntValueAndNotify();">
+<meta property="og:description" content="KVO的实现依赖于Runtime即当一个类型为 RTPersopn 的对象，被添加了观察后，系统会生成一个 NSKVONotifying_RTPersopn 的子类，并将对象的isa指针指向新的类，也就是说这个对象的类型发生了变化。这个类相比较于RTPersopn，会重写以下几个方法。  重写setter, setter 的IMP地址就是_NSSetIntValueAndNotify这个函数的地址">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://ps77z1wgt.bkt.clouddn.com/_name.png">
 <meta property="og:image" content="http://ps77z1wgt.bkt.clouddn.com/_isName.png">
 <meta property="og:image" content="http://ps77z1wgt.bkt.clouddn.com/name.png">
 <meta property="og:image" content="http://ps77z1wgt.bkt.clouddn.com/kvcSet.png">
 <meta property="og:image" content="http://ps77z1wgt.bkt.clouddn.com/kvcGet.png">
-<meta property="og:updated_time" content="2019-06-04T10:04:05.025Z">
+<meta property="og:updated_time" content="2019-06-04T15:56:36.738Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kvo和kvc的调用原理">
-<meta name="twitter:description" content="KVO的实现依赖于Runtime即当一个类型为 RTPersopn 的对象，被添加了观察后，系统会生成一个 NSKVONotifying_RTPersopn 的子类，并将对象的isa指针指向新的类，也就是说这个对象的类型发生了变化。这个类相比较于RTPersopn，会重写以下几个方法。  重写setter,在 setter 中，会调用以下方法。1_NSSetIntValueAndNotify();">
+<meta name="twitter:description" content="KVO的实现依赖于Runtime即当一个类型为 RTPersopn 的对象，被添加了观察后，系统会生成一个 NSKVONotifying_RTPersopn 的子类，并将对象的isa指针指向新的类，也就是说这个对象的类型发生了变化。这个类相比较于RTPersopn，会重写以下几个方法。  重写setter, setter 的IMP地址就是_NSSetIntValueAndNotify这个函数的地址">
 <meta name="twitter:image" content="http://ps77z1wgt.bkt.clouddn.com/_name.png">
 
 
@@ -442,7 +442,7 @@
       
         <h4 id="KVO的实现依赖于Runtime"><a href="#KVO的实现依赖于Runtime" class="headerlink" title="KVO的实现依赖于Runtime"></a>KVO的实现依赖于Runtime</h4><p>即当一个类型为 RTPersopn 的对象，被添加了观察后，系统会生成一个 NSKVONotifying_RTPersopn 的子类，并将对象的isa指针指向新的类，也就是说这个对象的类型发生了变化。这个类相比较于RTPersopn，会重写以下几个方法。</p>
 <ul>
-<li>重写setter,在 setter 中，会调用以下方法。<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">_NSSetIntValueAndNotify(); <span class="comment">//至于是Int还是double,需要看你声明的属性的类型(如果没有手动修改setter方法参数的类型的话)</span></span><br></pre></td></tr></table></figure>
+<li>重写setter, setter 的IMP地址就是_NSSetIntValueAndNotify这个函数的地址，所以会调用以下函数。<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">_NSSetIntValueAndNotify(); <span class="comment">//至于是Int还是double,需要看你声明的属性的类型(如果没有手动修改setter方法参数的类型的话)</span></span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 <p>而<code>_NSSetIntValueAndNotify</code>则会调用以下方法<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">willChangeValueForKey:(<span class="built_in">NSString</span> *)key;</span><br><span class="line">[<span class="keyword">super</span> set: xxx];</span><br><span class="line">(<span class="keyword">void</span>)didChangeValueForKey:(<span class="built_in">NSString</span> *)key;</span><br></pre></td></tr></table></figure></p>

@@ -15,9 +15,7 @@
 
 
 <html class="theme-next muse use-motion" lang="zh-CN">
-<head>
-  <meta name="google-site-verification" content="pfYs602N_4i4qdPPy5J-oxmNXaQy7K_3LjkHzEwsphs" />  
-  <meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
@@ -102,7 +100,7 @@
 <meta name="keywords" content="ios web vue">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Restver&#39;s Notes">
-<meta property="og:url" content="https://notes.restver.me/index.html">
+<meta property="og:url" content="https://notes.restver.me/page/2/index.html">
 <meta property="og:site_name" content="Restver&#39;s Notes">
 <meta property="og:description" content="restver&apos;s ios&amp;web notes">
 <meta property="og:locale" content="zh-CN">
@@ -115,7 +113,7 @@
 
 
 
-  <link rel="canonical" href="https://notes.restver.me/">
+  <link rel="canonical" href="https://notes.restver.me/page/2/">
 
 
 
@@ -222,7 +220,7 @@
         
         
           
-          <li class="menu-item menu-item-home menu-item-active">
+          <li class="menu-item menu-item-home">
 
     
     
@@ -335,7 +333,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://notes.restver.me/2019/06/04/kvo-kvc/">
+    <link itemprop="mainEntityOfPage" href="https://notes.restver.me/2019/01/16/ios-load-local-html/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="restver">
@@ -355,7 +353,7 @@
           <h1 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/2019/06/04/kvo-kvc/" class="post-title-link" itemprop="url">kvo和kvc的调用原理</a>
+                <a href="/2019/01/16/ios-load-local-html/" class="post-title-link" itemprop="url">iOS webView加载本地html，并在url携带query</a>
               
             
           </h1>
@@ -380,12 +378,30 @@
                 
               
 
-              <time title="创建时间：2019-06-04 18:00:06" itemprop="dateCreated datePublished" datetime="2019-06-04T18:00:06+08:00">2019-06-04</time>
+              <time title="创建时间：2019-01-16 17:13:14" itemprop="dateCreated datePublished" datetime="2019-01-16T17:13:14+08:00">2019-01-16</time>
             
 
             
           </span>
 
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -398,8 +414,8 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
             
-                <a href="/2019/06/04/kvo-kvc/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/06/04/kvo-kvc/" itemprop="commentCount"></span>
+                <a href="/2019/01/16/ios-load-local-html/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/01/16/ios-load-local-html/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -407,7 +423,7 @@
 
           
           
-            <span id="/2019/06/04/kvo-kvc/" class="leancloud_visitors" data-flag-title="kvo和kvc的调用原理">
+            <span id="/2019/01/16/ios-load-local-html/" class="leancloud_visitors" data-flag-title="iOS webView加载本地html，并在url携带query">
               <span class="post-meta-divider">|</span>
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
@@ -439,16 +455,207 @@
 
       
         
-          <h4 id="KVO的实现依赖于Runtime"><a href="#KVO的实现依赖于Runtime" class="headerlink" title="KVO的实现依赖于Runtime"></a>KVO的实现依赖于Runtime</h4><p>即当一个类型为 RTPersopn 的对象，被添加了观察后，系统会生成一个 NSKVONotifying_RTPersopn 的子类，并将对象的isa指针指向新的类，也就是说这个对象的类型发生了变化。这个类相比较于RTPersopn，会重写以下几个方法。</p>
-<ul>
-<li>重写setter, setter 的IMP地址就是_NSSetIntValueAndNotify这个函数的地址，所以会调用以下函数。<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">_NSSetIntValueAndNotify(); <span class="comment">//至于是Int还是double,需要看你声明的属性的类型(如果没有手动修改setter方法参数的类型的话)</span></span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>而<code>_NSSetIntValueAndNotify</code>则会调用以下方法<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">willChangeValueForKey:(<span class="built_in">NSString</span> *)key;</span><br><span class="line">[<span class="keyword">super</span> set: xxx];</span><br><span class="line">(<span class="keyword">void</span>)didChangeValueForKey:(<span class="built_in">NSString</span> *)key;</span><br></pre></td></tr></table></figure></p>
+          <h4 id="为了加快页面的加载速度和在无网络时也能加载出来网页，所以项目把加载url的做法废弃了，把vue生成的dist文件，用webview本地加载，由于平时都是直接写url地址，所以第一次写的时候，翻了好多网上的文章，现在我只有一句话想说，大家别抄来抄去了，转发之前-自己先测试下吧。。。。。"><a href="#为了加快页面的加载速度和在无网络时也能加载出来网页，所以项目把加载url的做法废弃了，把vue生成的dist文件，用webview本地加载，由于平时都是直接写url地址，所以第一次写的时候，翻了好多网上的文章，现在我只有一句话想说，大家别抄来抄去了，转发之前-自己先测试下吧。。。。。" class="headerlink" title="为了加快页面的加载速度和在无网络时也能加载出来网页，所以项目把加载url的做法废弃了，把vue生成的dist文件，用webview本地加载，由于平时都是直接写url地址，所以第一次写的时候，翻了好多网上的文章，现在我只有一句话想说，大家别抄来抄去了，转发之前,自己先测试下吧。。。。。"></a>为了加快页面的加载速度和在无网络时也能加载出来网页，所以项目把加载url的做法废弃了，把vue生成的dist文件，用webview本地加载，由于平时都是直接写url地址，所以第一次写的时候，翻了好多网上的文章，现在我只有一句话想说，大家别抄来抄去了，转发之前,自己先测试下吧。。。。。</h4><ol>
+<li><p>读取本地的HTML</p>
+<p> <img src="https://restver.me/assets/images/js-app-invoke/path_error.jpg" alt="path_error"></p>
           <!--noindex-->
           
             <div class="post-button text-center">
-              <a class="btn" href="/2019/06/04/kvo-kvc/#more" rel="contents">
+              <a class="btn" href="/2019/01/16/ios-load-local-html/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </li></ol></div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://notes.restver.me/2019/01/15/dart-constructor/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="restver">
+      <meta itemprop="description" content="restver's ios&web notes">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Restver's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/01/15/dart-constructor/" class="post-title-link" itemprop="url">理解Dart中的构造函数</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-15 15:15:42" itemprop="dateCreated datePublished" datetime="2019-01-15T15:15:42+08:00">2019-01-15</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Flutter基础/" itemprop="url" rel="index"><span itemprop="name">Flutter基础</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <a href="/2019/01/15/dart-constructor/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/01/15/dart-constructor/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2019/01/15/dart-constructor/" class="leancloud_visitors" data-flag-title="理解Dart中的构造函数">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h4 id="Dart语言中的类"><a href="#Dart语言中的类" class="headerlink" title="Dart语言中的类"></a>Dart语言中的类</h4><ul>
+<li>Dart 语言中所有的对象都是某一个类的实例,所有的类有同一个基类–Object</li>
+<li>Dart 是一种面向对象的语言，并且支持基于mixin的继承方式</li>
+<li>基于mixin的继承方式具体是指：一个类可以继承自多个父类</li>
+</ul>
+<h4 id="创建对象"><a href="#创建对象" class="headerlink" title="创建对象"></a>创建对象</h4><blockquote>
+<p>使用new语句来构造一个类，构造函数的名字可能是ClassName，也可以是ClassName.otherName</p>
+</blockquote>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> p1 = <span class="keyword">new</span> Person(<span class="string">"xiaoming"</span>, <span class="number">20</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> p2 = <span class="keyword">new</span> Person.fromDictionary(dictionary)</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/01/15/dart-constructor/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -508,7 +715,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://notes.restver.me/2019/06/01/performance-caton-opt/">
+    <link itemprop="mainEntityOfPage" href="https://notes.restver.me/2018/12/26/stylus-study/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="restver">
@@ -528,7 +735,7 @@
           <h1 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/2019/06/01/performance-caton-opt/" class="post-title-link" itemprop="url">性能&卡顿优化注意点</a>
+                <a href="/2018/12/26/stylus-study/" class="post-title-link" itemprop="url">stylu使用总结之 & 、迭代 、判断 、函数</a>
               
             
           </h1>
@@ -553,7 +760,7 @@
                 
               
 
-              <time title="创建时间：2019-06-01 15:12:07" itemprop="dateCreated datePublished" datetime="2019-06-01T15:12:07+08:00">2019-06-01</time>
+              <time title="创建时间：2018-12-26 16:31:10" itemprop="dateCreated datePublished" datetime="2018-12-26T16:31:10+08:00">2018-12-26</time>
             
 
             
@@ -571,7 +778,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/web前端/" itemprop="url" rel="index"><span itemprop="name">web前端</span></a></span>
 
                 
                 
@@ -589,8 +796,8 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
             
-                <a href="/2019/06/01/performance-caton-opt/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/06/01/performance-caton-opt/" itemprop="commentCount"></span>
+                <a href="/2018/12/26/stylus-study/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2018/12/26/stylus-study/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -598,7 +805,7 @@
 
           
           
-            <span id="/2019/06/01/performance-caton-opt/" class="leancloud_visitors" data-flag-title="性能&卡顿优化注意点">
+            <span id="/2018/12/26/stylus-study/" class="leancloud_visitors" data-flag-title="stylu使用总结之 & 、迭代 、判断 、函数">
               <span class="post-meta-divider">|</span>
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
@@ -630,18 +837,14 @@
 
       
         
-          <h5 id="在屏幕成像的过程中，CPU和GPU起着至关重要的作用"><a href="#在屏幕成像的过程中，CPU和GPU起着至关重要的作用" class="headerlink" title="在屏幕成像的过程中，CPU和GPU起着至关重要的作用"></a>在屏幕成像的过程中，CPU和GPU起着至关重要的作用</h5><ol>
-<li>CPU（Central Processing Unit，中央处理器）对象的创建和销毁、对象属性的调整、布局计算、文本的计算和排版、图片的格式转换和解码、图像的绘制（Core Graphics）</li>
-<li>GPU（Graphics Processing Unit，图形处理器）纹理的渲染</li>
-</ol>
-<h5 id="卡顿解决的主要思路"><a href="#卡顿解决的主要思路" class="headerlink" title="卡顿解决的主要思路"></a>卡顿解决的主要思路</h5><ul>
-<li>尽可能减少CPU、GPU资源消耗</li>
-<li>按照60FPS的刷帧率</li>
-</ul>
+          <h1 id="amp-——-gt-父级的引用"><a href="#amp-——-gt-父级的引用" class="headerlink" title="&amp;  ——&gt; 父级的引用"></a>&amp;  ——&gt; 父级的引用</h1><p>  <img src="https://restver.me/assets/images/stylus-study/fujiyinyong.gif" alt="父级的引用"></p>
+  <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"a"</span>&gt;</span>黑化肥挥发发灰会花飞；灰化肥挥发发黑会飞花<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>  css的写法</p>
+  <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.a</span>&#123; <span class="attribute">height</span>: <span class="number">120px</span>; <span class="attribute">width</span>: <span class="number">120px</span>; <span class="attribute">background-color</span>: green; &#125;</span><br><span class="line"><span class="selector-class">.a</span><span class="selector-pseudo">:hover</span> &#123; <span class="attribute">background-color</span>: red;&#125;</span><br></pre></td></tr></table></figure>
           <!--noindex-->
           
             <div class="post-button text-center">
-              <a class="btn" href="/2019/06/01/performance-caton-opt/#more" rel="contents">
+              <a class="btn" href="/2018/12/26/stylus-study/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -701,7 +904,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://notes.restver.me/2019/05/26/autoreleasepool/">
+    <link itemprop="mainEntityOfPage" href="https://notes.restver.me/2018/12/23/js-app-invoke/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="restver">
@@ -721,7 +924,7 @@
           <h1 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/2019/05/26/autoreleasepool/" class="post-title-link" itemprop="url">autoreleasepool和autorelease原理探究</a>
+                <a href="/2018/12/23/js-app-invoke/" class="post-title-link" itemprop="url">vue中js和app互相调用</a>
               
             
           </h1>
@@ -746,7 +949,7 @@
                 
               
 
-              <time title="创建时间：2019-05-26 18:36:24" itemprop="dateCreated datePublished" datetime="2019-05-26T18:36:24+08:00">2019-05-26</time>
+              <time title="创建时间：2018-12-23 18:02:28" itemprop="dateCreated datePublished" datetime="2018-12-23T18:02:28+08:00">2018-12-23</time>
             
 
             
@@ -764,7 +967,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/web前端/" itemprop="url" rel="index"><span itemprop="name">web前端</span></a></span>
 
                 
                 
@@ -782,8 +985,8 @@
                   <i class="fa fa-comment-o"></i>
                 </span>
             
-                <a href="/2019/05/26/autoreleasepool/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/05/26/autoreleasepool/" itemprop="commentCount"></span>
+                <a href="/2018/12/23/js-app-invoke/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2018/12/23/js-app-invoke/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -791,7 +994,7 @@
 
           
           
-            <span id="/2019/05/26/autoreleasepool/" class="leancloud_visitors" data-flag-title="autoreleasepool和autorelease原理探究">
+            <span id="/2018/12/23/js-app-invoke/" class="leancloud_visitors" data-flag-title="vue中js和app互相调用">
               <span class="post-meta-divider">|</span>
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
@@ -823,594 +1026,12 @@
 
       
         
-          <h4 id="先把项目改为MRC-在main-m中写如下代码"><a href="#先把项目改为MRC-在main-m中写如下代码" class="headerlink" title="先把项目改为MRC,在main.m中写如下代码."></a>先把项目改为MRC,在main.m中写如下代码.</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[]) &#123;</span><br><span class="line">	<span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">		__unused RTStudent *stu = [[[RTStudent alloc] init] autorelease];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>使用<code>xcrun -sdk iphoneos clang -arch arm64 -rewrite-objc main.m</code>转为C++代码,再整理后得<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</span><br><span class="line">    &#123; </span><br><span class="line">        __AtAutoreleasePool __autoreleasepool;</span><br><span class="line">        RTStudent *stu = objc_msgSend(objc_msgSend(objc_msgSend(objc_getClass(<span class="string">"RTStudent"</span>), sel_registerName(<span class="string">"alloc"</span>)), sel_registerName(<span class="string">"init"</span>)), sel_registerName(<span class="string">"autorelease"</span>));</span><br><span class="line">    &#125;</span><br><span class="line"> <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+          <p>  最近做的一个项目，基本上是抛弃了原生，整个app就是一个webview，web不能实现的功能，就需要和app进行交互了。  需求来了，接下来要做的就是实现了，然后随手就把实现代码写出来了：</p>
+<h4 id="Round-1"><a href="#Round-1" class="headerlink" title="Round 1"></a>Round 1</h4><p>  如图所示:<br>  <img src="https://restver.me/assets/images/js-app-invoke/res.jpg" alt="代码"></p>
           <!--noindex-->
           
             <div class="post-button text-center">
-              <a class="btn" href="/2019/05/26/autoreleasepool/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://notes.restver.me/2019/05/24/rutime-super/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="restver">
-      <meta itemprop="description" content="restver's ios&web notes">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Restver's Notes">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/05/24/rutime-super/" class="post-title-link" itemprop="url">Runtime -- super的本质</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-05-24 13:43:39" itemprop="dateCreated datePublished" datetime="2019-05-24T13:43:39+08:00">2019-05-24</time>
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-              
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <a href="/2019/05/24/rutime-super/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/05/24/rutime-super/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-            <span id="/2019/05/24/rutime-super/" class="leancloud_visitors" data-flag-title="Runtime -- super的本质">
-              <span class="post-meta-divider">|</span>
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              
-                <span class="post-meta-item-text">阅读次数：</span>
-              
-                <span class="leancloud-visitors-count"></span>
-            </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h4 id="一道面试题引发的-对于super本质的探究"><a href="#一道面试题引发的-对于super本质的探究" class="headerlink" title="一道面试题引发的,对于super本质的探究"></a>一道面试题引发的,对于super本质的探究</h4><figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">RTStudent</span></span></span><br><span class="line"></span><br><span class="line">-(<span class="keyword">instancetype</span>)init &#123;</span><br><span class="line">	<span class="keyword">if</span> (<span class="keyword">self</span> = [<span class="keyword">super</span> init]) &#123;</span><br><span class="line">		<span class="built_in">NSLog</span>(<span class="string">@"self和super调用class的结果:"</span>);</span><br><span class="line">		<span class="built_in">NSLog</span>(<span class="string">@"[self class]---%@"</span>,[<span class="keyword">self</span> <span class="keyword">class</span>]);</span><br><span class="line">		<span class="built_in">NSLog</span>(<span class="string">@"[super class]---%@"</span>,[<span class="keyword">super</span> <span class="keyword">class</span>]);</span><br><span class="line">		</span><br><span class="line">		<span class="built_in">NSLog</span>(<span class="string">@"self和super调用superclass的结果:"</span>);</span><br><span class="line">		<span class="built_in">NSLog</span>(<span class="string">@"[self superclass]---%@"</span>,[<span class="keyword">self</span> superclass]);</span><br><span class="line">		<span class="built_in">NSLog</span>(<span class="string">@"[super superclass]---%@"</span>,[<span class="keyword">super</span> superclass]);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/2019/05/24/rutime-super/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://notes.restver.me/2019/05/20/check-method/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="restver">
-      <meta itemprop="description" content="restver's ios&web notes">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Restver's Notes">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/05/20/check-method/" class="post-title-link" itemprop="url">runtime如何通过selector找到对应的IMP地址的？</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-05-20 13:20:07" itemprop="dateCreated datePublished" datetime="2019-05-20T13:20:07+08:00">2019-05-20</time>
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-              
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <a href="/2019/05/20/check-method/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/05/20/check-method/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-            <span id="/2019/05/20/check-method/" class="leancloud_visitors" data-flag-title="runtime如何通过selector找到对应的IMP地址的？">
-              <span class="post-meta-divider">|</span>
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              
-                <span class="post-meta-item-text">阅读次数：</span>
-              
-                <span class="leancloud-visitors-count"></span>
-            </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h4 id="runtime如何通过selector找到对应的IMP地址"><a href="#runtime如何通过selector找到对应的IMP地址" class="headerlink" title="runtime如何通过selector找到对应的IMP地址"></a>runtime如何通过selector找到对应的IMP地址</h4><ul>
-<li><p>SEL代表方法(函数名)，一般叫做选择器，底层结构跟char *类似</p>
-<ul>
-<li>可以通过@selector()和sel_registerName()获得</li>
-<li>可以通过sel_getName()和NSStringFromSelector()转成字符串</li>
-<li>不同类中相同名字的方法，所对应的方法选择器是相同的</li>
-</ul>
-</li>
-<li><p>method_t的数据结构</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> method_t &#123;</span><br><span class="line">    SEL name;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *types;</span><br><span class="line">    MethodListIMP imp;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">struct</span> SortBySELAddress :</span><br><span class="line">        public std::binary_function&lt;<span class="keyword">const</span> method_t&amp;,</span><br><span class="line">                                    <span class="keyword">const</span> method_t&amp;, <span class="keyword">bool</span>&gt;</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">bool</span> operator() (<span class="keyword">const</span> method_t&amp; lhs,</span><br><span class="line">                        <span class="keyword">const</span> method_t&amp; rhs)</span><br><span class="line">        &#123; <span class="keyword">return</span> lhs.name &lt; rhs.name; &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/2019/05/20/check-method/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://notes.restver.me/2019/05/17/runtime/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="restver">
-      <meta itemprop="description" content="restver's ios&web notes">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Restver's Notes">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/05/17/runtime/" class="post-title-link" itemprop="url">runtime消息发送的流程</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-05-17 21:19:49" itemprop="dateCreated datePublished" datetime="2019-05-17T21:19:49+08:00">2019-05-17</time>
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-              
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <a href="/2019/05/17/runtime/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/05/17/runtime/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-            <span id="/2019/05/17/runtime/" class="leancloud_visitors" data-flag-title="runtime消息发送的流程">
-              <span class="post-meta-divider">|</span>
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              
-                <span class="post-meta-item-text">阅读次数：</span>
-              
-                <span class="leancloud-visitors-count"></span>
-            </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h4 id="什么是Runtime？"><a href="#什么是Runtime？" class="headerlink" title="什么是Runtime？"></a>什么是Runtime？</h4><ul>
-<li>OC是一门动态性比较强的编程语言，允许很多操作推迟到程序运行时再进行</li>
-<li>OC的动态性就是由Runtime来支撑和实现的，Runtime是一套C语言的API，封装了很多动态性相关的函数</li>
-<li>平时编写的OC代码，底层都是转换成了Runtime API进行调用</li>
-</ul>
-<h4 id="具体应用"><a href="#具体应用" class="headerlink" title="具体应用"></a>具体应用</h4><ul>
-<li>利用关联对象（AssociatedObject）给分类添加属性</li>
-<li>遍历类的所有成员变量（修改textfield的占位文字颜色、字典转模型、自动归档解档）</li>
-<li>交换方法实现（交换系统的方法）</li>
-<li>利用消息转发机制解决方法找不到的异常问题</li>
-</ul>
-<ul>
-<li>OC中的方法调用，其实都是转换为objc_msgSend函数的调用</li>
-</ul>
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/2019/05/17/runtime/#more" rel="contents">
+              <a class="btn" href="/2018/12/23/js-app-invoke/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1459,7 +1080,7 @@
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
   </nav>
 
 
