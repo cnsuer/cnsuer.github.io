@@ -16,7 +16,7 @@
 
 <html class="theme-next muse use-motion" lang="zh-CN">
 <head>
-  <meta name="google-site-verification" content="pfYs602N_4i4qdPPy5J-oxmNXaQy7K_3LjkHzEwsphs" />
+  <meta name="google-site-verification" content="pfYs602N_4i4qdPPy5J-oxmNXaQy7K_3LjkHzEwsphs" />  
   <meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -355,7 +355,7 @@
           <h1 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/2019/06/08/block/" class="post-title-link" itemprop="url">blcok详解</a>
+                <a href="/2019/06/08/block/" class="post-title-link" itemprop="url">iOS中blcok详解</a>
               
             
           </h1>
@@ -425,7 +425,7 @@
 
           
           
-            <span id="/2019/06/08/block/" class="leancloud_visitors" data-flag-title="blcok详解">
+            <span id="/2019/06/08/block/" class="leancloud_visitors" data-flag-title="iOS中blcok详解">
               <span class="post-meta-divider">|</span>
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
@@ -457,8 +457,8 @@
 
       
         
-          <h4 id="blcok的本质"><a href="#blcok的本质" class="headerlink" title="blcok的本质"></a>blcok的本质</h4><p><code>main.m</code>中的代码</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[]) &#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> age = <span class="number">18</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> height = <span class="number">55</span>;</span><br><span class="line"><span class="keyword">void</span> (^block)(<span class="keyword">int</span>) = ^(<span class="keyword">int</span> pa) &#123;</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"--block-局部auto变量的捕获--%d"</span>,age);</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"--block-局部static变量的捕获--%d"</span>,height);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"---%@"</span>,[block <span class="keyword">class</span>]);</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"---%@"</span>,[[block <span class="keyword">class</span>] superclass]);</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"---%@"</span>,[[[block <span class="keyword">class</span>] superclass] superclass]);</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"---%@"</span>,[[[[block <span class="keyword">class</span>] superclass] superclass] superclass]);</span><br><span class="line"></span><br><span class="line">block(<span class="number">10</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          <h4 id="blcok的本质就是一个对象"><a href="#blcok的本质就是一个对象" class="headerlink" title="blcok的本质就是一个对象"></a>blcok的本质就是一个对象</h4><p><code>main.m</code>中的代码</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[]) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> age = <span class="number">18</span>;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">int</span> height = <span class="number">55</span>;</span><br><span class="line">    <span class="keyword">void</span> (^block)(<span class="keyword">int</span>) = ^(<span class="keyword">int</span> pa) &#123;</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"--block-局部auto变量的捕获--%d"</span>,age);</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"--block-局部static变量的捕获--%d"</span>,height);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"---%@"</span>,[block <span class="keyword">class</span>]);</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"---%@"</span>,[[block <span class="keyword">class</span>] superclass]);</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"---%@"</span>,[[[block <span class="keyword">class</span>] superclass] superclass]);</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"---%@"</span>,[[[[block <span class="keyword">class</span>] superclass] superclass] superclass]);</span><br><span class="line"></span><br><span class="line">    block(<span class="number">10</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
           <!--noindex-->
           
             <div class="post-button text-center">
@@ -631,7 +631,7 @@
 <li>重写setter, setter 的IMP地址就是_NSSetIntValueAndNotify这个函数的地址，所以会调用以下函数。<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">_NSSetIntValueAndNotify(); <span class="comment">//至于是Int还是double,需要看你声明的属性的类型(如果没有手动修改setter方法参数的类型的话)</span></span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<p>而<code>_NSSetIntValueAndNotify</code>则会调用以下方法<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">willChangeValueForKey:(<span class="built_in">NSString</span> *)key;</span><br><span class="line">[<span class="keyword">super</span> set: xxx];</span><br><span class="line">(<span class="keyword">void</span>)didChangeValueForKey:(<span class="built_in">NSString</span> *)key;</span><br></pre></td></tr></table></figure></p>
+<p>而<code>_NSSetIntValueAndNotify</code>函数内部,会调用以下方法<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">willChangeValueForKey:(Int )key;</span><br><span class="line">[<span class="keyword">super</span> set: key];</span><br><span class="line">didChangeValueForKey:(Int )key;</span><br></pre></td></tr></table></figure></p>
           <!--noindex-->
           
             <div class="post-button text-center">
