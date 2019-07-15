@@ -2,16 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://notes.restver.me/2019/06/08/block/</loc>
+    <loc>https://notes.restver.me/2019/05/17/runtime/</loc>
     
-    <lastmod>2019-06-13T15:17:00.887Z</lastmod>
+    <lastmod>2019-07-15T03:25:19.195Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://notes.restver.me/2019/06/04/kvo-kvc/</loc>
     
-    <lastmod>2019-06-13T14:43:41.858Z</lastmod>
+    <lastmod>2019-07-15T03:24:13.710Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://notes.restver.me/2019/05/26/autoreleasepool/</loc>
+    
+    <lastmod>2019-07-15T03:21:59.076Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://notes.restver.me/2019/06/08/block/</loc>
+    
+    <lastmod>2019-06-13T15:17:00.887Z</lastmod>
     
   </url>
   
@@ -23,23 +37,9 @@
   </url>
   
   <url>
-    <loc>https://notes.restver.me/2019/05/17/runtime/</loc>
-    
-    <lastmod>2019-06-02T15:38:21.448Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://notes.restver.me/2019/05/20/check-method/</loc>
     
     <lastmod>2019-06-02T15:10:18.891Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://notes.restver.me/2019/05/26/autoreleasepool/</loc>
-    
-    <lastmod>2019-06-02T12:29:23.005Z</lastmod>
     
   </url>
   

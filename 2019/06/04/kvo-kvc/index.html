@@ -104,16 +104,16 @@
 <meta property="og:site_name" content="Restver&#39;s Notes">
 <meta property="og:description" content="KVO的实现依赖于Runtime即当一个类型为 RTPersopn 的对象，被添加了观察后，系统会生成一个 NSKVONotifying_RTPersopn 的子类，并将对象的isa指针指向新的类，也就是说这个对象的类型发生了变化。这个类相比较于RTPersopn，会重写以下几个方法。  重写setter, setter 的IMP地址就是_NSSetIntValueAndNotify这个函数的地址">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://ps77z1wgt.bkt.clouddn.com/_name.png">
-<meta property="og:image" content="http://ps77z1wgt.bkt.clouddn.com/_isName.png">
-<meta property="og:image" content="http://ps77z1wgt.bkt.clouddn.com/name.png">
-<meta property="og:image" content="http://ps77z1wgt.bkt.clouddn.com/kvcSet.png">
-<meta property="og:image" content="http://ps77z1wgt.bkt.clouddn.com/kvcGet.png">
-<meta property="og:updated_time" content="2019-06-13T14:43:41.858Z">
+<meta property="og:image" content="https://restver.me/assets/images/interview/_name.png">
+<meta property="og:image" content="https://restver.me/assets/images/interview/_isName.png">
+<meta property="og:image" content="https://restver.me/assets/images/interview/name.png">
+<meta property="og:image" content="https://restver.me/assets/images/interview/kvcSet.png">
+<meta property="og:image" content="https://restver.me/assets/images/interview/kvcGet.png">
+<meta property="og:updated_time" content="2019-07-15T03:24:13.710Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kvo和kvc的调用原理">
 <meta name="twitter:description" content="KVO的实现依赖于Runtime即当一个类型为 RTPersopn 的对象，被添加了观察后，系统会生成一个 NSKVONotifying_RTPersopn 的子类，并将对象的isa指针指向新的类，也就是说这个对象的类型发生了变化。这个类相比较于RTPersopn，会重写以下几个方法。  重写setter, setter 的IMP地址就是_NSSetIntValueAndNotify这个函数的地址">
-<meta name="twitter:image" content="http://ps77z1wgt.bkt.clouddn.com/_name.png">
+<meta name="twitter:image" content="https://restver.me/assets/images/interview/_name.png">
 
 
 
@@ -488,24 +488,24 @@
 <li>如果以上方法都没有实现,KVC机制会检查+ (BOOL)accessInstanceVariablesDirectly方法有没有返回YES，默认该方法会返回YES，如果你重写了该方法让其返回NO的话，那么在这一步KVC会执行setValue：forUndefinedKey：方法，不过一般开发者不会这么做。所以KVC机制会按顺序搜索该类里面有没有名为_name、_isName、name、isName的成员变量，无论该变量是在类接口处定义，还是在类实现处定义，也无论用了什么样的访问修饰符，只在存在，KVC都可以对该成员变量赋值。<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">RTPerson</span></span>&#123;</span><br><span class="line"><span class="built_in">NSString</span> *_name;</span><br><span class="line"><span class="built_in">NSString</span> *_isName;</span><br><span class="line"><span class="built_in">NSString</span> *name;</span><br><span class="line"><span class="built_in">NSString</span> *isName;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<p><img src="http://ps77z1wgt.bkt.clouddn.com/_name.png" alt="_name"></p>
+<p><img src="https://restver.me/assets/images/interview/_name.png" alt="_name"></p>
 <ul>
 <li>如果还没有<code>_name</code>成员变量，KVC机制会搜索<code>_isName</code>的成员变量。<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">RTPerson</span></span>&#123;</span><br><span class="line"><span class="built_in">NSString</span> *_isName;</span><br><span class="line"><span class="built_in">NSString</span> *name;</span><br><span class="line"><span class="built_in">NSString</span> *isName;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<p><img src="http://ps77z1wgt.bkt.clouddn.com/_isName.png" alt="_isName"></p>
+<p><img src="https://restver.me/assets/images/interview/_isName.png" alt="_isName"></p>
 <ul>
 <li>如果还没有<code>_isName</code>成员变量，KVC机制再会继续搜索<code>name</code>的成员变量,赋值。<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">RTPerson</span></span>&#123;</span><br><span class="line"><span class="built_in">NSString</span> *name;</span><br><span class="line"><span class="built_in">NSString</span> *isName;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<p><img src="http://ps77z1wgt.bkt.clouddn.com/name.png" alt="name"></p>
+<p><img src="https://restver.me/assets/images/interview/name.png" alt="name"></p>
 <ul>
 <li><p>如果还没有<code>name</code>成员变量，KVC机制再会继续搜索<code>isName</code>的成员变量,赋值。</p>
 </li>
 <li><p>如果上面列出的方法或者成员变量都不存在，系统将会执行该对象的setValue：forUndefinedKey：方法，默认是抛出异常。</p>
 </li>
 </ul>
-<p><img src="http://ps77z1wgt.bkt.clouddn.com/kvcSet.png" alt="kvc设置方法查找顺序"></p>
+<p><img src="https://restver.me/assets/images/interview/kvcSet.png" alt="kvc设置方法查找顺序"></p>
 <h4 id="kvc的取值顺序"><a href="#kvc的取值顺序" class="headerlink" title="kvc的取值顺序"></a>kvc的取值顺序</h4><p>当调用<code>[obj valueForKey:@&quot;name&quot;];</code>的代码时，其搜索方式如下：</p>
 <ol>
 <li>首先按查找<code>getName</code>方法，找到的话会直接调用。如果是BOOL或者Int等值类型， 会将其包装成一个NSNumber对象。<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">RTPerson</span></span>&#123;</span><br><span class="line"><span class="built_in">NSString</span> *_name;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="built_in">NSString</span> *)getName &#123;</span><br><span class="line"><span class="keyword">return</span> <span class="string">@"getName"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="built_in">NSString</span> *)name &#123;</span><br><span class="line"><span class="keyword">return</span> <span class="string">@"name"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="built_in">NSString</span> *)_isName &#123;</span><br><span class="line"><span class="keyword">return</span> <span class="string">@"_isName"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="built_in">NSString</span> *)_name &#123;</span><br><span class="line"><span class="keyword">return</span> <span class="string">@"_name"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
@@ -542,7 +542,7 @@
 <ol start="5">
 <li>如果还没有找到，再检查类方法+ (BOOL)accessInstanceVariablesDirectly,如果返回YES(默认行为)，那么和先前的设值一样，会按_name,_isName,name,isName的顺序搜索成员变量名.如果重写了类方法+ (BOOL)accessInstanceVariablesDirectly返回NO的话，那么会直接调用valueForUndefinedKey:方法，默认是抛出异常。</li>
 </ol>
-<p><img src="http://ps77z1wgt.bkt.clouddn.com/kvcGet.png" alt="kvc取值的方法查找顺序"></p>
+<p><img src="https://restver.me/assets/images/interview/kvcGet.png" alt="kvc取值的方法查找顺序"></p>
 <h5 id="用KVC实现高阶消息传递"><a href="#用KVC实现高阶消息传递" class="headerlink" title="用KVC实现高阶消息传递"></a>用KVC实现高阶消息传递</h5><p>当对容器类使用KVC时，valueForKey:将会被传递给容器中的每一个对象，而不是容器本身进行操作。结果会被添加进返回的容器中，这样可以很方便的操作集合来返回另一个集合。</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">-(<span class="keyword">void</span>)touchesBegan:(<span class="built_in">NSSet</span>&lt;<span class="built_in">UITouch</span> *&gt; *)touches withEvent:(<span class="built_in">UIEvent</span> *)event &#123;</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSArray</span>* arrStr = @[<span class="string">@"english"</span>,<span class="string">@"franch"</span>,<span class="string">@"chinese"</span>];</span><br><span class="line"><span class="built_in">NSArray</span>* arrCapStr = [arrStr valueForKey:<span class="string">@"capitalizedString"</span>];</span><br><span class="line"><span class="keyword">for</span> (<span class="built_in">NSString</span>* str  <span class="keyword">in</span> arrCapStr) &#123;</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"%@"</span>,str);</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">NSArray</span>* arrCapStrLength = [arrStr valueForKeyPath:<span class="string">@"capitalizedString.length"</span>];</span><br><span class="line"><span class="keyword">for</span> (<span class="built_in">NSNumber</span>* length  <span class="keyword">in</span> arrCapStrLength) &#123;</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"%ld"</span>,(<span class="keyword">long</span>)length.integerValue);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>打印结果：</p>

@@ -104,14 +104,14 @@
 <meta property="og:site_name" content="Restver&#39;s Notes">
 <meta property="og:description" content="什么是Runtime？ OC是一门动态性比较强的编程语言，允许很多操作推迟到程序运行时再进行 OC的动态性就是由Runtime来支撑和实现的，Runtime是一套C语言的API，封装了很多动态性相关的函数 平时编写的OC代码，底层都是转换成了Runtime API进行调用  具体应用 利用关联对象（AssociatedObject）给分类添加属性 遍历类的所有成员变量（修改textfield的占位">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://ps77z1wgt.bkt.clouddn.com/msgSend2.png">
-<meta property="og:image" content="http://ps77z1wgt.bkt.clouddn.com/resolve.png">
-<meta property="og:image" content="http://ps77z1wgt.bkt.clouddn.com/forward.png">
-<meta property="og:updated_time" content="2019-06-02T15:38:21.448Z">
+<meta property="og:image" content="https://restver.me/assets/images/interview/msgSend2.png">
+<meta property="og:image" content="https://restver.me/assets/images/interview/resolve.png">
+<meta property="og:image" content="https://restver.me/assets/images/interview/forward.png">
+<meta property="og:updated_time" content="2019-07-15T03:25:19.195Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="runtime消息发送的流程">
 <meta name="twitter:description" content="什么是Runtime？ OC是一门动态性比较强的编程语言，允许很多操作推迟到程序运行时再进行 OC的动态性就是由Runtime来支撑和实现的，Runtime是一套C语言的API，封装了很多动态性相关的函数 平时编写的OC代码，底层都是转换成了Runtime API进行调用  具体应用 利用关联对象（AssociatedObject）给分类添加属性 遍历类的所有成员变量（修改textfield的占位">
-<meta name="twitter:image" content="http://ps77z1wgt.bkt.clouddn.com/msgSend2.png">
+<meta name="twitter:image" content="https://restver.me/assets/images/interview/msgSend2.png">
 
 
 
@@ -496,7 +496,7 @@
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">IMP lookUpImpOrNil(Class cls, SEL sel, <span class="keyword">id</span> inst, <span class="keyword">bool</span> initialize, <span class="keyword">bool</span> cache, <span class="keyword">bool</span> resolver)() &#123;</span><br><span class="line">  IMP imp = lookUpImpOrForward(cls, sel, inst, initialize, cache, resolver);</span><br><span class="line">  <span class="keyword">if</span> (imp == _objc_msgForward_impcache) <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">return</span> imp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>根据sel查找IMP: <a href="https://notes.restver.me/2019/05/20/check-method/" title="根据sel查找IMP的过程">根据sel查找IMP的过程</a> </p>
-<p><img src="http://ps77z1wgt.bkt.clouddn.com/msgSend2.png" alt=""></p>
+<p><img src="https://restver.me/assets/images/interview/msgSend2.png" alt=""></p>
 </li>
 </ul>
 </li>
@@ -505,7 +505,7 @@
 <li><p>可以实现以下方法，来动态添加方法实现</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">+resolveInstanceMethod:</span><br><span class="line">+resolveClassMethod:</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>动态解析过后，会重新走“消息发送”的流程,“从receiverClass的cache中查找方法”这一步开始执行<br><img src="http://ps77z1wgt.bkt.clouddn.com/resolve.png" alt=""></p>
+<li><p>动态解析过后，会重新走“消息发送”的流程,“从receiverClass的cache中查找方法”这一步开始执行<br><img src="https://restver.me/assets/images/interview/resolve.png" alt=""></p>
 </li>
 </ul>
 </li>
@@ -520,7 +520,7 @@
 <li>如果-methodSignatureForSelector:返回nil，Runtime则会发出-doesNotRecognizeSelector:消息，程序这时也就挂掉了。</li>
 <li>如果返回了一个函数签名，Runtime就会创建一个NSInvocation对象并发送-forwardInvocation:消息给目标对象。</li>
 </ul>
-<p><img src="http://ps77z1wgt.bkt.clouddn.com/forward.png" alt=""></p>
+<p><img src="https://restver.me/assets/images/interview/forward.png" alt=""></p>
 </li>
 </ol>
 

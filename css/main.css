@@ -1895,7 +1895,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #ffff03;
+  background: #cbff6b;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -2640,7 +2640,7 @@ embed {
   display: inline-block;
 }
 .header {
-  background-image: url("https://ws1.sinaimg.cn/large/694830ebgy1fh3pyd05klj21kw0f2dy2.jpg");
+  background-image: url("https://restver.me/assets/images/header.jpg");
 }
 .site-title {
   display: inline-block;

@@ -104,12 +104,12 @@
 <meta property="og:site_name" content="Restver&#39;s Notes">
 <meta property="og:description" content="先把项目改为MRC,在main.m中写如下代码.123456int main(int argc, const char * argv[]) &amp;#123;	@autoreleasepool &amp;#123;		__unused RTStudent *stu = [[[RTStudent alloc] init] autorelease];	&amp;#125;	return 0;&amp;#125; 使用xcrun -">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://ps77z1wgt.bkt.clouddn.com/autoreleasePoolPage.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/600">
-<meta property="og:updated_time" content="2019-06-02T12:29:23.005Z">
+<meta property="og:image" content="https://restver.me/assets/images/interview/autoreleasePoolPage.png">
+<meta property="og:updated_time" content="2019-07-15T03:21:59.076Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="autoreleasepool和autorelease原理探究">
 <meta name="twitter:description" content="先把项目改为MRC,在main.m中写如下代码.123456int main(int argc, const char * argv[]) &amp;#123;	@autoreleasepool &amp;#123;		__unused RTStudent *stu = [[[RTStudent alloc] init] autorelease];	&amp;#125;	return 0;&amp;#125; 使用xcrun -">
-<meta name="twitter:image" content="http://ps77z1wgt.bkt.clouddn.com/autoreleasePoolPage.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/600">
+<meta name="twitter:image" content="https://restver.me/assets/images/interview/autoreleasePoolPage.png">
 
 
 
@@ -469,7 +469,7 @@
 <li>所有的AutoreleasePoolPage对象通过双向链表的形式连接在一起</li>
 <li>next指向下一个可用于存放autorelease对象的地址</li>
 </ul>
-<p><img src="http://ps77z1wgt.bkt.clouddn.com/autoreleasePoolPage.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/600" alt="AutoreleasePoolPage"></p>
+<p><img src="https://restver.me/assets/images/interview/autoreleasePoolPage.png" alt="AutoreleasePoolPage"></p>
 <p>那么从哪个地址开始存放需要autorelease的对象呢?它有一个方法<code>begin()</code>,可以看到,<code>this</code>的起始地址+自己的成员所占的大小,就是存放<code>需要autorelease的对象</code>的起始地址<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">id * begin() &#123;</span><br><span class="line">    return (id *) ((uint8_t *)this+sizeof(*this));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>那么结束地址在哪里呢?它有一个方法<code>end()</code>,可以看到,<code>this</code>的起始地址+自己的数据结构的大小<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">id * end() &#123;</span><br><span class="line">    return (id *) ((uint8_t *)this+SIZE);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>由于一个page对象只有4096字节,所以当需要autorelease对象太多的话,一个page装不下,所以可能一个pool中有很多个page对象,而<code>child</code>指针指向的就是下一个page对象,<code>parent</code>指向的就是上一个page对象</p>
