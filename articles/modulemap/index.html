@@ -1,0 +1,93 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="UTF-8"/><meta property="og:site_name" content="Restver's Blog"/><link rel="canonical" href="https://cnsuer.github.io/articles/modulemap"/><meta name="twitter:url" content="https://cnsuer.github.io/articles/modulemap"/><meta property="og:url" content="https://cnsuer.github.io/articles/modulemap"/><title>动态库中中使用modulemap使OC与Swift互相调用 | Restver's Blog</title><meta name="twitter:title" content="动态库中中使用modulemap使OC与Swift互相调用 | Restver's Blog"/><meta property="og:title" content="动态库中中使用modulemap使OC与Swift互相调用 | Restver's Blog"/><meta name="description" content="Programming & Life"/><meta name="twitter:description" content="Programming & Life"/><meta property="og:description" content="Programming & Life"/><meta name="twitter:card" content="summary"/><meta name="twitter:site" content="@Hanley_Lei"/><meta name="twitter:creator" content="@Hanley_Lei"/><meta name="referrer" content="no-referrer"/><link rel="stylesheet" href="/css/styles.css" type="text/css"/><link rel="stylesheet" href="/css/code.css" type="text/css"/><link rel="stylesheet" href="/css/toc.css" type="text/css"/><link rel="stylesheet" href="/css/font.css" type="text/css"/><link rel="stylesheet" href="/css/search.css" type="text/css"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link rel="shortcut icon" href="/img/icon_site.JPG" type="image/jpeg"/><link rel="alternate" href="/feed.rss" type="application/rss+xml" title="Subscribe to Restver's Blog"/><script src="/js/jquery.min.js"></script><link rel="stylesheet" href="/css/heti.min.css"/><meta name="theme-color" content="#C62F1C"/></head><body class="item-page"><header><div class="wrapper"><div class="logo"><a href="/"><img src="/img/icon_site.JPG"/></a></div><div><div class="headerIcons"><a class="icon headIconTwitter" href="https://www.twitter.com/" target="_blank" rel="noreferrer"></a><a class="icon headIconEmail" href="mailto:restver@gmail.com" target="_blank" rel="noreferrer"></a><a class="icon headIconGithub" href="https://github.com/restver/" target="_blank" rel="noreferrer"></a><a class="icon headIconZhihu" href="https://www.zhihu.com/" target="_blank" rel="noreferrer"></a><a class="icon headIconRss" href="/feed.rss" target="_blank" rel="noreferrer"></a></div></div><nav><ul><li><a href="/">最近更新</a></li><li><a class="selected" href="/articles">全部文章</a></li><li><a href="/about">关于</a></li><li><a href="/search">搜索</a></li></ul><div class="weixinHeadQcode" onclick="$('.weixinHeadQcode').css('display','none');"></div></nav></div></header><div class="container"><div class="wrapper"><div class="viewContainer"><div class="centerContent"><div class="post-actions"><div class="actionButton"><div class="actionButton twitter" onclick="window.open('https://twitter.com/intent/tweet?text=动态库中中使用modulemap使OC与Swift互相调用&url=https://cnsuer.github.io/articles/modulemap&via=Hanley_Lei','target','');"></div></div><div class="actionButton"><div class="actionButton comment" onclick="$('html,body').animate({scrollTop: $('#gitalk-container').offset().top }, {duration: 500,easing:'swing'})"></div></div></div><article><div class="post-title"><h1>动态库中中使用modulemap使OC与Swift互相调用</h1></div><div><ul class="tag-list"><li class="tag variant-0"><a href="/tags/modulemap">⦿modulemap</a></li><li class="tag variant-3"><a href="/tags/swift">⦿swift</a></li><li class="tag variant-1"><a href="/tags/oc">⦿oc</a></li><li class="tagdate"></li><li class="reading-time">👓 2 min</li></ul><div class="content"><h1>动态库中使用modulemap使OC与Swift互相调用</h1><pre><code># 动态库中OC如何与Swift互相调用
+在RFramework使用过程中,遇到了一个难以复现的问题,再所以需要对SDK添加Log进行监控,经过调研,决定引入`<span class="type">CocoaLumberjack</span>`这个日志库,但因为SDK本身有一些Swift的代码,现在加入这个日志库后,需要Swift中的代码调用这个日志库了,所以
+
+### <span class="number">1</span>. **<span class="type">ObjC</span> 调用 <span class="type">Swift</span>**
+
+在Framework中实现 <span class="type">ObjC</span> 调用 <span class="type">Swift</span>,和平时在项目中那样,过设置`<span class="type">Swift Compiler</span> -&gt; <span class="type">Objective</span>-<span class="type">C Generated Interface Header Name</span>`就可以了
+- 在 <span class="type">Build Setting</span> 中,搜索SWIFT_OBJC_INTERFACE_HEADER_NAME,配置正确的名字,比如默认的`$(<span class="type">SWIFT_MODULE_NAME</span>)-<span class="type">Swift</span>.<span class="property">h</span>`
+- 然后在 <span class="type">ObjC</span> 中引入该模块的 <span class="type">Swift</span> 头文件,然后使用#import &lt;<span class="type">XXX</span>/<span class="type">XXX</span>-<span class="type">Swift</span>.<span class="property">h</span>&gt;倒入生成的头文件
+- 若在 <span class="type">ObjC的</span> .<span class="dotAccess">h</span> 中引入，则可以通过向前声明的方式，<span class="keyword">@class</span> <span class="type">XXX</span>
+
+```<span class="type">ObjC</span>
+<span class="comment">// RLog.m</span>
+#import &lt;<span class="type">RFramework</span>/<span class="type">RFramework</span>-<span class="type">Swift</span>.<span class="property">h</span>&gt;
+
+-(void)log:(<span class="type">NSString</span> *)<span class="call">message</span> {
+  <span class="type">DDDebug</span>(message);
+}
+
+-(void)<span class="call">useSwiftTest</span> {
+    <span class="type">RPreviewController</span> *preview = [[<span class="type">RPreviewController</span> alloc] <span class="keyword">init</span>];
+    [preview show];
+}
+</code></pre><h3>2. <strong>Swift 调用 ObjC</strong></h3><p>但是在Framework中实现 Swift 调用 ObjC，通过设置 Bridging-Header 的方式是无法解决的。如果尝试在<code>Swift Compiler -&gt; Objective-C Bridging Header</code>填入OC的头文件,然后编译,最终将会报错: <code>Using bridging headers with framework targets is unsupported</code></p><p>此时可以使用 <code>modulemap</code> 的方式访问,创建一个<code>RFramework.modulemap</code>文件</p><pre><code><span class="comment">/* RtFramework.modulemap */</span>
+framework module <span class="type">RFramework</span> {
+    umbrella <span class="string">"Headers"</span>
+    export *
+}
+</code></pre><p>然后在在 <code>buildSettings → packaging → Module Map File</code> 写入这个 <code>modulemap</code>文件的路径,然后把想要在Swift中使用的OC文件,比如<code>Pikachu.h</code>放在<code>Build Phases → Hearders → Public</code> 中</p><pre><code><span class="comment">// RPreviewController.swift</span>
+<span class="keyword">@objcMembers public class</span> RPreviewController: <span class="type">UIViewController</span> {
+    ...
+
+    <span class="keyword">func</span> show() {
+
+      ....
+
+      webView.<span class="call">loadRequest</span>(request)
+
+      <span class="type">RLog</span>.<span class="call">log</span>(<span class="string">"RPreviewController.show"</span>)
+    }
+
+}
+</code></pre><p>此时就可以在动态库内部,使用Swift调用OC了.</p><p>那这个 <code>modulemap</code> 是个啥意思呢,它是用来描述头文件与module之间映射的关系,比如前边写的那个文件: <code>framework module 代表这个是一个Framework的module,</code> Framework的名称叫做<code>RFramework</code></p><p><code>umbrella "Headers"</code>,表示该模块包含 <code>"Headers"</code>目录下的所有头文件.其实从名字看就也能大概理解,伞状头文件,伞下边的所有东西(伞兵啊什么的…),都属于伞的一部分</p><p>OK,那么Headers文件夹是哪里来的呢?当framework编译完后,编译产物会自动生成一个Headers文件夹,并且把所有 <code>Public</code> 的头文件都放在这个文件夹里面 <img src="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/fa07bbea-3759-4d64-ac98-67e7ec9ab05b/Untitled.png"/></p><p>在外部项目中使用:</p><pre><code><span class="comment">// ViewController.m</span>
+#import &lt;<span class="type">RFramework</span>/<span class="type">RFramework</span>.<span class="property">h</span>&gt;
+<span class="comment">//或者使用module语法 `@import RFramework;`</span>
+
+- (void)<span class="call">viewDidLoad</span> {
+    [<span class="keyword">super</span> viewDidLoad];
+    
+    <span class="type">RPreviewController</span> *m = [[<span class="type">RPreviewController</span> alloc] <span class="keyword">init</span>];
+    <span class="type">RLog</span> *l = [[<span class="type">RLog</span> alloc] <span class="keyword">init</span>];
+}
+</code></pre><p>当然在看别人第三方库的时候,会发现还有另外一种用法:</p><pre><code>framework module <span class="type">RFramework</span> {
+    umbrella header <span class="string">"RFramework.h"</span>
+    export *
+}
+</code></pre><p>这种写法的意思是,只有在<code>"RFramework.h"</code> 中引用的头文件,才能作为该模块的一部分给外部使用,比如我们在 <code>RFramework.h</code> 中导入下边的文件</p><pre><code><span class="comment">// RFramework.h</span>
+#import <span class="string">"RPreviewController.h"</span>
+</code></pre><p>此时,你会发现 <code>RPreviewController</code> 可以正常使用, <code>RLog</code>报错了,使用未声明的文件,即使你强行导入这个文件 <code>#import &lt;RFramework/RLog.h&gt;</code> 也还是报错</p><pre><code>#import &lt;<span class="type">RFramework</span>/<span class="type">RFramework</span>.<span class="property">h</span>&gt;
+
+- (void)<span class="call">viewDidLoad</span> {
+    [<span class="keyword">super</span> viewDidLoad];
+    
+    <span class="type">RPreviewController</span> *m = [[<span class="type">RPreviewController</span> alloc] <span class="keyword">init</span>];
+    <span class="type">RLog</span> *r = [[<span class="type">RLog</span> alloc] <span class="keyword">init</span>]; <span class="comment">// Use of undeclared identifier 'RLog'</span>
+}
+</code></pre><p>子module的语法,把开始的例子的modulemap文件做些修改,在module中再声明两module: <code>Preview</code> 和 <code>Log</code></p><pre><code>framework module <span class="type">RFramework</span> {
+    module <span class="type">Preview</span> {
+        header <span class="string">"RPreviewController.h"</span>
+    }
+    module <span class="type">Log</span> {
+        header <span class="string">"RLog.h"</span>
+    }
+}
+</code></pre><p>使用的时候只导入 <code>#import &lt;RFramework/RPreviewController.h&gt;</code> 或者使用module语法 <code>@import RFramework.Preview;</code>就可以了</p><pre><code>- (void)<span class="call">viewDidLoad</span> {
+    [<span class="keyword">super</span> viewDidLoad];
+
+    <span class="type">RPreviewController</span> *p = [[<span class="type">RPreviewController</span> alloc] <span class="keyword">init</span>];
+	
+}
+</code></pre><p><code>export *</code> 首先说 <code>export</code>,也可以叫做re_export</p><p>使用上边的那个modulemap文件,然后只导入<code>@import RFramework.Preview;</code>,这时编译就会报错,要想使用RLog的话,需要导入模块 <code>Log</code></p><pre><code>- (void)<span class="call">viewDidLoad</span> {
+    [<span class="keyword">super</span> viewDidLoad];
+
+    <span class="type">RPreviewController</span> *p = [[<span class="type">RPreviewController</span> alloc] <span class="keyword">init</span>];
+		<span class="comment">// Declaration of 'RLog' must be imported from module 
+    //'RFramework.Log' before it is required</span>
+    <span class="type">RLog</span> *l = [[<span class="type">RLog</span> alloc] <span class="keyword">init</span>];
+}
+</code></pre><p>当然,直接导入<code>Log</code>模块就不会报错了,但是如果我既不想导入,还想正常使用该怎么办呢?</p><pre><code>module <span class="type">Preview</span> {
+    header <span class="string">"RPreviewController.h"</span>
+    export <span class="type">Log</span>
+}
+</code></pre><p>对modulemap文件稍做修改,把<code>Log</code> 在 <code>Preview</code> 的模块中重新导出去,使用就不会报错,所以 上边的 <code>export *</code> 的意思就很明显了,导出当前 <code>头文件/头文件集合</code> 的所有的符号</p><p>当然,subModule其实在swift中,只有象征意义了,尽管只倒入</p><p>参考1: <a href="https://zhuanlan.zhihu.com/p/349967113" target="_blank">京东App Swift 混编及组件化落地 - 知乎 (zhihu.com)</a></p><p>参考2: <a href="https://juejin.cn/post/6956467380604436494" target="_blank">Swift与Objective-C互相调用(总结) - 掘金 (juejin.cn)</a></p><pre><code>
+</code></pre></div><div class="license"><p>本博客文章采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC 4.0 协议</a>，转载需注明出处和作者。</p></div></div></article><div class="item-navigator"><table><tr><td></td><td class="next-item"><a href="/articles/oc-webview-promise">OC 代码 webview 执行 JS,如何有效的消除回调地狱</a></td></tr></table></div></div><div class="side-nav"><div class="sidebar"></div></div>    <script src="/js/toc.js"></script></div></div><footer><p>Copyright &copy; Restver 2023 <a href="http://beian.miit.gov.cn">京ICP备20000113号</a></p><p>Generated using <a href="https://github.com/johnsundell/publish" target="_blank">Publish</a></p><ul><li><a href="https://twitter.com/" target="_blank"><img class="twitter" src="/img/twitter.svg"/></a></li><li><a href="https://github.com/restver/" target="_blank"><img src="/img/github.svg"/></a></li><li><a href="https://www.zhihu.com/" target="_blank"><img src="/img/zhihu.svg"/></a></li><li><a href="/feed.rss"><img src="/img/rss.svg"/></a></li></ul></footer></div></body></html>
