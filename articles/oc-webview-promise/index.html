@@ -1,0 +1,177 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="UTF-8"/><meta property="og:site_name" content="Restver's Blog"/><link rel="canonical" href="https://cnsuer.github.io/articles/oc-webview-promise"/><meta name="twitter:url" content="https://cnsuer.github.io/articles/oc-webview-promise"/><meta property="og:url" content="https://cnsuer.github.io/articles/oc-webview-promise"/><title>OC 代码 webview 执行 JS,如何有效的消除回调地狱 | Restver's Blog</title><meta name="twitter:title" content="OC 代码 webview 执行 JS,如何有效的消除回调地狱 | Restver's Blog"/><meta property="og:title" content="OC 代码 webview 执行 JS,如何有效的消除回调地狱 | Restver's Blog"/><meta name="description" content="Programming & Life"/><meta name="twitter:description" content="Programming & Life"/><meta property="og:description" content="Programming & Life"/><meta name="twitter:card" content="summary"/><meta name="twitter:site" content="@Hanley_Lei"/><meta name="twitter:creator" content="@Hanley_Lei"/><meta name="referrer" content="no-referrer"/><link rel="stylesheet" href="/css/styles.css" type="text/css"/><link rel="stylesheet" href="/css/code.css" type="text/css"/><link rel="stylesheet" href="/css/toc.css" type="text/css"/><link rel="stylesheet" href="/css/font.css" type="text/css"/><link rel="stylesheet" href="/css/search.css" type="text/css"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link rel="shortcut icon" href="/img/icon_site.JPG" type="image/jpeg"/><link rel="alternate" href="/feed.rss" type="application/rss+xml" title="Subscribe to Restver's Blog"/><script src="/js/jquery.min.js"></script><link rel="stylesheet" href="/css/heti.min.css"/><meta name="theme-color" content="#C62F1C"/></head><body class="item-page"><header><div class="wrapper"><div class="logo"><a href="/"><img src="/img/icon_site.JPG"/></a></div><div><div class="headerIcons"><a class="icon headIconTwitter" href="https://www.twitter.com/" target="_blank" rel="noreferrer"></a><a class="icon headIconEmail" href="mailto:restver@gmail.com" target="_blank" rel="noreferrer"></a><a class="icon headIconGithub" href="https://github.com/restver/" target="_blank" rel="noreferrer"></a><a class="icon headIconZhihu" href="https://www.zhihu.com/" target="_blank" rel="noreferrer"></a><a class="icon headIconRss" href="/feed.rss" target="_blank" rel="noreferrer"></a></div></div><nav><ul><li><a href="/">最近更新</a></li><li><a class="selected" href="/articles">全部文章</a></li><li><a href="/about">关于</a></li><li><a href="/search">搜索</a></li></ul><div class="weixinHeadQcode" onclick="$('.weixinHeadQcode').css('display','none');"></div></nav></div></header><div class="container"><div class="wrapper"><div class="viewContainer"><div class="centerContent"><div class="post-actions"><div class="actionButton"><div class="actionButton twitter" onclick="window.open('https://twitter.com/intent/tweet?text=OC 代码 webview 执行 JS,如何有效的消除回调地狱&url=https://cnsuer.github.io/articles/oc-webview-promise&via=Hanley_Lei','target','');"></div></div><div class="actionButton"><div class="actionButton comment" onclick="$('html,body').animate({scrollTop: $('#gitalk-container').offset().top }, {duration: 500,easing:'swing'})"></div></div></div><article><div class="post-title"><h1>OC 代码 webview 执行 JS,如何有效的消除回调地狱</h1></div><div><ul class="tag-list"><li class="tag variant-2"><a href="/tags/webview">⦿webview</a></li><li class="tag variant-1"><a href="/tags/promise">⦿promise</a></li><li class="tag variant-0"><a href="/tags/oc">⦿oc</a></li><li class="tagdate"></li><li class="reading-time">👓 4 min</li></ul><div class="content"><h1>OC 代码 webview 执行 JS,如何有效的消除回调地狱</h1><p>在项目中,偶发的报一个 JS 错误 <code>A lavaScript exception occurred</code> ,找到这段的具体实现</p><pre><code>const scrDom = document.<span class="call">createElement</span>(<span class="string">"script"</span>);
+scrDom.<span class="property">src</span> = basic.<span class="property">min</span>.<span class="property">js</span>;
+scrDom.<span class="call">addEventListener</span>(<span class="string">"load"</span>, () =&gt; {
+  <span class="keyword">if</span> (!haveMacJS) {
+    window.<span class="property">webkit</span>.<span class="property">messageHandlers</span>.<span class="property">setPlanSucceed</span>.<span class="call">postMessage</span>(<span class="string">""</span>);
+  }
+});
+const macScrDom = document.<span class="call">createElement</span>(<span class="string">"script"</span>);
+macScrDom.<span class="property">src</span> = mac.<span class="property">min</span>.<span class="property">js</span>;
+macScrDom.<span class="call">addEventListener</span>(<span class="string">"load"</span>, () =&gt; {
+  window.<span class="property">webkit</span>.<span class="property">messageHandlers</span>.<span class="property">setPlanSucceed</span>.<span class="call">postMessage</span>(<span class="string">""</span>);
+});
+</code></pre><p>发现逻辑是当需要在 <code>webView</code> 中 加载两个精算文件,并且等到这两个精算文件都加载完毕后,再通知 native 端,把参数传回到 webView,执行计算,发现这段代码并不是按顺序执行完,然后才通知 native 端的.</p><p>出现问题的原因是,需要在 JS 端和 Native 端来回传参,无形中增加了问题出现的概率,为了遵循相同逻辑,同一地方处理的原则,就在 native 端加载这两个 JS 文件</p><pre><code><span class="type">NSString</span> *basicString = [<span class="type">NSString</span> stringWithContentsOfFile: basicJsPath encoding:<span class="type">NSUTF8StringEncoding</span> error: <span class="keyword">nil</span>];
+<span class="comment">// 加载第一个js文件</span>
+[webView evaluateJavaScript: basicString completionHandler:^(id <span class="type">_Nullable</span> res, <span class="type">NSError</span> * <span class="type">_Nullable</span> basicError) {
+	  <span class="comment">//如果需要加载第二个文件</span>
+		<span class="keyword">if</span> ([<span class="type">RFileTool</span> existFileAtPath: macroJsPath])
+	  {
+				<span class="comment">//第二个精算文件存在的话,加载它</span>
+        <span class="type">NSString</span> *macroString = [<span class="type">NSString</span> stringWithContentsOfFile: macroJsPath encoding:<span class="type">NSUTF8StringEncoding</span> error:<span class="keyword">nil</span>];
+        [weakWebView evaluateJavaScript: macroString completionHandler:^(id <span class="type">_Nullable</span> response, <span class="type">NSError</span> * <span class="type">_Nullable</span> macroError) {
+            <span class="comment">// 第二个文件加载成功的话,通知webView,执行初始化操作</span>
+            <span class="type">NSString</span> *javaScriptString = [<span class="type">NSString</span> stringWithFormat:<span class="keyword">@"setPlan</span>('%<span class="keyword">@</span>',%d)<span class="string">", weakSelf.lastPlanId, YES];</span>
+            [weakWebView evaluateJavaScript:javaScriptString completionHandler:^(id <span class="type">_Nullable</span> response, <span class="type">NSError</span> * <span class="type">_Nullable</span> error) {
+                <span class="comment">//初始化成功,调用native的计算方法.</span>
+								[weakSelf loadCalculate];
+            }];
+        }];
+    }
+		<span class="keyword">else</span>
+		{
+				<span class="comment">// 不需要加载第二个精算文件的话,通知webView,执行初始化操作</span>
+        <span class="type">NSString</span> *javaScriptString = [<span class="type">NSString</span> stringWithFormat:<span class="keyword">@"setPlan</span>('%<span class="keyword">@</span>',%d)<span class="string">", weakSelf.lastPlanId, NO];</span>
+        [weakWebView evaluateJavaScript:javaScriptString completionHandler:^(id <span class="type">_Nullable</span> response, <span class="type">NSError</span> * <span class="type">_Nullable</span> error) {
+            <span class="comment">//初始化成功,调用native的计算方法.</span>
+						[weakSelf loadCalculate];
+        }];
+		}
+}];
+</code></pre><p>以上一个的方法中,套了三层回调,这还是省略了处理错误的情况下,如果再加上错误处理,这里的代码将会变的非常的多以及丑陋.</p><p>如果能像其他语言中,Promise 链式调用方式,代码就会变的清晰了,可惜 OC 不支持 Promise,只能自己实现了.</p><p>先看下最终效果,然后讲解具体的实现逻辑,虽然代码量看上去没少多少,但是调用逻辑清晰多了,也没有那么多重复代码了.当然这里每一个 promise 对象都有一个 catch,这里是为了统计具体是哪一个 js 加载出错了,如果不需要这样统计,可以修改代码,统一 catch</p><pre><code><span class="comment">//promise入口,使用类方法firstlyWithJSEvaluator,创建第一个promise</span>
+[[[[[[[<span class="type">RJSEvalPromise</span> firstlyWithJSEvaluator: webView js: ^<span class="type">NSString</span> * (void) {
+    <span class="comment">//返回需要加载的js文件</span>
+    <span class="type">NSString</span> *basicString = [<span class="type">NSString</span> stringWithContentsOfFile: basicJsPath encoding:<span class="type">NSUTF8StringEncoding</span> error: <span class="keyword">nil</span>];
+    <span class="keyword">return</span> basicString;
+}] <span class="keyword">catch</span>:^(<span class="type">NSError</span> * <span class="type">_Nonnull</span> basicError) {
+		<span class="comment">//处理加载js出错的情况</span>
+    <span class="type">NSLogDebug</span>(<span class="string">@"❌---load basic js file:%@ faile--error:%@---❌", self.lastPlanId, basicError);</span>
+}] then: ^<span class="type">NSString</span> * (void) {
+		<span class="comment">//第一个js执行完毕后,这里返回需要加载的第二个js文件</span>
+    <span class="keyword">if</span> (isHaveMacro)
+    {
+        <span class="type">NSString</span> *macroString = [<span class="type">NSString</span> stringWithContentsOfFile: macroJsPath encoding:<span class="type">NSUTF8StringEncoding</span> error: <span class="keyword">nil</span>];
+        <span class="keyword">return</span> macroString;
+    }
+    <span class="keyword">return nil</span>;
+}] <span class="keyword">catch</span>:^(<span class="type">NSError</span> *macroError) {
+		<span class="comment">//处理加载js出错的情况</span>
+    <span class="type">NSLogDebug</span>(<span class="string">@"❌---load macro js file:%@ faile--error:%@---❌", self.lastPlanId, macroError);</span>
+}] then: ^<span class="type">NSString</span> * (void) {
+		<span class="comment">//通知webView,执行初始化操作</span>
+    <span class="type">NSString</span> *javaScriptString = [<span class="type">NSString</span> stringWithFormat:<span class="keyword">@"setPlan</span>('%<span class="keyword">@</span>',%d)<span class="string">", self.lastPlanId, isHaveMacro];</span>
+    <span class="keyword">return</span> javaScriptString;
+}] <span class="keyword">catch</span>:^(<span class="type">NSError</span> *setPlanError) {
+    <span class="type">NSLogDebug</span>(<span class="string">@"❌---set plan:%@ faile--error:%@---❌", self.lastPlanId, setPlanError);</span>
+}] finaly: ^<span class="type">NSString</span> * (void) {
+		<span class="comment">//初始化成功,调用native的计算方法.</span>
+		[<span class="keyword">self</span> loadCalculate];
+}];
+</code></pre><h3>RJSEvalPromise 的实现逻辑</h3><p><code>firstlyWithJSEvaluator</code> 这个方法需要传两个参数,第一个是 JS 执行环境,也就是 <code>webView</code>, 第二个是一个回调函数,类型定义为 <code>typedef NSString *_Nullable(^SQSPromiseFirstCallback)(void);</code> ,回调函数调用后,返回的就是需要执行的 JS 代码,这里直接返回了 promise,却没对它强引用,会不会导致在 JS 执行前自动释放呢,答案是不会,因为在 <code>aciton</code> 实现中, <code>webView</code> 的回调函数会捕获这个 promise 对象</p><pre><code><span class="comment">//RJSEvalPromise.m</span>
++ (instancetype)firstlyWithJSEvaluator:(<span class="type">WKWebView</span> *)jsEvaluator js:(<span class="type">SQSPromiseFirstCallback</span>)<span class="call">js</span> {
+    <span class="type">RJSEvalPromise</span>* promise = [<span class="type">RJSEvalPromise</span> makePromiseWithJSEvaluator: jsEvaluator js: js];
+    promise.<span class="call">aciton</span>();
+    promise.<span class="property">aciton</span> = <span class="keyword">nil</span>;
+    <span class="keyword">return</span> promise;
+}
+</code></pre><p><code>makePromiseWithJSEvaluator</code> 就是真正创建 promise 对象的方法,这里定义 promise 的具体执行逻辑,这里 promise 的 action 中直接使用了 promise,却不会循环引用的原因是上边在调用 action 后,直接把 action 手动置为 nil,消除了循环引用,但是编译器会弹出警告,所以加上 <code>diagnostic ignored</code> 让编译器忽略掉这个警告</p><pre><code>+ (instancetype)makePromiseWithJSEvaluator:(<span class="type">WKWebView</span> *)jsEvaluator js:(<span class="type">SQSPromiseFirstCallback</span>)js{
+    <span class="type">RJSEvalPromise</span> * promise = [[<span class="type">RJSEvalPromise</span> alloc] <span class="keyword">init</span>];
+    promise.<span class="property">jsEvaluator</span> = jsEvaluator;
+    promise.<span class="property">state</span> = <span class="type">RJSEvalPromiseStatePending</span>;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored <span class="string">"-Warc-retain-cycles"</span>
+    promise.<span class="property">aciton</span> = ^{
+        <span class="type">NSString</span> *string = <span class="call">js</span>();
+        <span class="comment">// if no need evaluateJavaScript, then Fulfilled.</span>
+        <span class="keyword">if</span> (!string)
+        {
+            promise.<span class="property">state</span> = <span class="type">RJSEvalPromiseStateFulfilled</span>;
+            [promise resume];
+            <span class="keyword">return</span>;
+        }
+        [jsEvaluator evaluateJavaScript: string completionHandler:^(id <span class="type">_Nullable</span> result, <span class="type">NSError</span> * <span class="type">_Nullable</span> error) {
+            promise.<span class="property">result</span> = result;
+            promise.<span class="property">error</span> = error;
+            <span class="keyword">if</span> (error) {
+                promise.<span class="property">state</span> = <span class="type">RJSEvalPromiseStateRejected</span>;
+            }<span class="keyword">else</span>{
+                promise.<span class="property">state</span> = <span class="type">RJSEvalPromiseStateFulfilled</span>;
+            }
+            [promise resume];
+        }];
+    };
+#pragma clang diagnostic pop
+    <span class="keyword">return</span> promise;
+}
+</code></pre><p>webView 调用<code>evaluateJavaScript</code> 方法,执行 JS 后,拿到执行的具体结果,给当前的 promise 赋值对应的状态.然后调用 <code>resume</code> 方法,看是否当前的 promise 链,已经调用完毕了</p><p><code>resume</code> 的实现就比较简单了,如果状态是 <code>Pending</code> 的话,直接返回,是 <code>Rejected</code> ,那么出现错误了,调 <code>catch</code> 回调函数,然后看是否有下一个 promise,有的话就执行它的 action 方法,直到 promise 链调用完毕</p><pre><code>- (void)<span class="call">resume</span> {
+    <span class="keyword">if</span> (<span class="keyword">self</span>.<span class="property">state</span> == <span class="type">RJSEvalPromiseStatePending</span>)
+    {
+        <span class="keyword">return</span>;
+    }
+    <span class="keyword">if</span> (<span class="keyword">self</span>.<span class="property">state</span> == <span class="type">RJSEvalPromiseStateRejected</span>)
+    {
+        <span class="keyword">if</span> (<span class="keyword">self</span>.<span class="property">catchCallback</span>) {
+            <span class="keyword">self</span>.<span class="call">catchCallback</span>(<span class="keyword">self</span>.<span class="property">error</span>);
+        }
+    }
+    <span class="keyword">if</span> (<span class="keyword">self</span>.<span class="property">nextFuture</span>.<span class="property">aciton</span>) {
+        <span class="keyword">self</span>.<span class="property">nextFuture</span>.<span class="call">aciton</span>();
+    }
+    <span class="keyword">self</span>.<span class="property">nextFuture</span>.<span class="property">aciton</span> = <span class="keyword">nil</span>;
+    <span class="keyword">if</span> (<span class="keyword">self</span>.<span class="property">finalCallback</span>) {
+        <span class="keyword">self</span>.<span class="call">finalCallback</span>(<span class="keyword">self</span>.<span class="property">result</span>);
+    }<span class="keyword">else if</span> (<span class="keyword">self</span>.<span class="property">emptyFinalCallback</span>) {
+        <span class="keyword">self</span>.<span class="call">emptyFinalCallback</span>();
+    }
+}
+</code></pre><p>当然这里,也可以修改为,如果发生错误的话,就不再执行下一个 promise 了,直接循环查找最后一个 catch 回调.</p><pre><code><span class="keyword">if</span> (<span class="keyword">self</span>.<span class="property">state</span> == <span class="type">RJSEvalPromiseStateRejected</span>)
+{
+    <span class="keyword">while</span> (<span class="keyword">self</span>.<span class="property">nextFuture</span> &amp;&amp; <span class="keyword">self</span>.<span class="property">nextFuture</span>.<span class="property">catchCallback</span>) {
+        <span class="keyword">self</span>.<span class="property">catchCallback</span> = <span class="keyword">self</span>.<span class="property">nextFuture</span>.<span class="property">catchCallback</span>;
+    }
+    <span class="keyword">if</span> (<span class="keyword">self</span>.<span class="property">catchCallback</span>) {
+        <span class="keyword">self</span>.<span class="call">catchCallback</span>(<span class="keyword">self</span>.<span class="property">error</span>);
+    }
+}
+</code></pre><p>哦,对了,还有 <code>then</code> 方法,它的实现和 <code>firstlyWithJSEvaluator</code>基本相同,调用 <code>makePromiseWithJSEvaluator</code> 然后保存创建的这个 promise 对象.</p><pre><code>- (instancetype)then:(<span class="type">SQSPromiseFirstCallback</span>)<span class="call">callback</span> {
+    <span class="type">RJSEvalPromise</span>* promise = [<span class="type">RJSEvalPromise</span> makePromiseWithJSEvaluator: <span class="keyword">self</span>.<span class="property">jsEvaluator</span> js: callback];
+    <span class="keyword">self</span>.<span class="property">nextFuture</span> = promise;
+    [<span class="keyword">self</span> resume];
+    <span class="keyword">return</span> promise;
+}
+</code></pre><p>还有 <code>catch</code> 和 <code>finally</code> 方法都是仅仅保存了回调函数,等待执行 JS 出结果后,在 resume 方法中调用</p><pre><code>- (instancetype)<span class="keyword">catch</span>:(void (^)(<span class="type">NSError</span> * <span class="type">_Nonnull</span>))<span class="call">callback</span> {
+    <span class="keyword">self</span>.<span class="property">catchCallback</span> = callback;
+    [<span class="keyword">self</span> resume];
+    <span class="keyword">return self</span>;
+}
+
+- (void)finally:(void (^)(void))<span class="call">callback</span> {
+    <span class="keyword">self</span>.<span class="property">emptyFinalCallback</span> = callback;
+    [<span class="keyword">self</span> resume];
+}
+</code></pre><p>当然这样做,有一大堆的[] , <strong><code>如何通过.(点)调用方法呢?</code></strong> iOS 中使用点调用属性的本质都是调用属性的 getter 方法来获取属性值. 那么连续使用的.调用,需要满足什么条件呢？</p><blockquote><p>1: 必须是对象方法;</p><p>2: 必须有返回值,返回值的类型是当前对象类型</p><p>3: <strong>一定是没有参数的</strong></p></blockquote><p>看到第三点的要求,不能传参数,那怎么把要执行的 JS 传递过去呢? 那么可以做个变更,返回值不再是一个 promise 对像,而返回一个 block,这个 block,调用后,再返回个 promise 对象,就满足了要求</p><pre><code>typedef <span class="type">RJSEvalPromise</span> *<span class="type">_Nullable</span>(^<span class="type">SQSPromiseDotThen</span>)(<span class="type">SQSPromiseFirstCallback</span>);
+
+- (<span class="type">SQSPromiseDotThen</span>)<span class="call">then</span> {
+    <span class="keyword">return</span> ^<span class="type">RJSEvalPromise</span> * <span class="type">_Nullable</span>(<span class="type">SQSPromiseFirstCallback _Nonnull</span> callback) {
+        <span class="type">RJSEvalPromise</span>* promise = [<span class="type">RJSEvalPromise</span> makePromiseWithJSEvaluator: <span class="keyword">self</span>.<span class="property">jsEvaluator</span> js: callback jsResult: <span class="keyword">nil</span> result: <span class="keyword">nil</span>];
+        <span class="keyword">self</span>.<span class="property">nextFuture</span> = promise;
+        [<span class="keyword">self</span> resume];
+        <span class="keyword">return</span> promise;
+    };
+}
+</code></pre><p>这样就达到了,使用.语法的链式调用了</p><pre><code>[[<span class="type">RJSEvalPromise</span> firstlyWithJSEvaluator: webView js: ^<span class="type">NSString</span> * (void) {
+    <span class="type">NSString</span> *basicString = [<span class="type">NSString</span> stringWithContentsOfFile: basicJsPath encoding:<span class="type">NSUTF8StringEncoding</span> error: <span class="keyword">nil</span>];
+    <span class="keyword">return</span> basicString;
+}].<span class="call">dotThen</span>(^<span class="type">NSString</span> * (void) {
+    <span class="keyword">if</span> (isHaveMacro)
+    {
+        <span class="type">NSString</span> *macroString = [<span class="type">NSString</span> stringWithContentsOfFile: macroJsPath encoding:<span class="type">NSUTF8StringEncoding</span> error: <span class="keyword">nil</span>];
+        <span class="keyword">return</span> macroString;
+    }
+    <span class="keyword">return nil</span>;
+}).<span class="call">dotThen</span>(^<span class="type">NSString</span> * (void) {
+    <span class="type">NSString</span> *javaScriptString = [<span class="type">NSString</span> stringWithFormat:<span class="keyword">@"setPlan</span>('%<span class="keyword">@</span>',%d)<span class="string">", self.lastPlanId, isHaveMacro];</span>
+    <span class="keyword">return</span> javaScriptString;
+}) finally:^{
+
+}];
+</code></pre><p>至此,完成了回调地狱到 promise 链式调用的转换.</p></div><div class="license"><p>本博客文章采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC 4.0 协议</a>，转载需注明出处和作者。</p></div></div></article><div class="item-navigator"><table><tr><td></td><td></td></tr></table></div></div><div class="side-nav"><div class="sidebar"></div></div>    <script src="/js/toc.js"></script></div></div><footer><p>Copyright &copy; Restver 2023 <a href="http://beian.miit.gov.cn">京ICP备20000113号</a></p><p>Generated using <a href="https://github.com/johnsundell/publish" target="_blank">Publish</a></p><ul><li><a href="https://twitter.com/" target="_blank"><img class="twitter" src="/img/twitter.svg"/></a></li><li><a href="https://github.com/restver/" target="_blank"><img src="/img/github.svg"/></a></li><li><a href="https://www.zhihu.com/" target="_blank"><img src="/img/zhihu.svg"/></a></li><li><a href="/feed.rss"><img src="/img/rss.svg"/></a></li></ul></footer></div></body></html>

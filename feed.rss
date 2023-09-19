@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Restver's Blog</title><description>Programming &amp; Life</description><link>https://cnsuer.github.io</link><language>zh</language><lastBuildDate>Mon, 18 Sep 2023 21:25:11 +0800</lastBuildDate><pubDate>Mon, 18 Sep 2023 21:25:11 +0800</pubDate><ttl>250</ttl><atom:link href="https://cnsuer.github.io/feed.rss" rel="self" type="application/rss+xml"/><item><guid isPermaLink="true">https://cnsuer.github.io/articles/oc-webview-promise</guid><title>OC 代码 webview 执行 JS,如何有效的消除回调地狱</title><description></description><link>https://cnsuer.github.io/articles/oc-webview-promise</link><pubDate>Sat, 22 Jul 2023 00:00:00 +0800</pubDate><content:encoded><![CDATA[<h1>OC 代码 webview 执行 JS,如何有效的消除回调地狱</h1><p>在项目中,偶发的报一个 JS 错误 <code>A lavaScript exception occurred</code> ,找到这段的具体实现</p><pre><code>const scrDom = document.<span class="call">createElement</span>(<span class="string">"script"</span>);
+scrDom.<span class="property">src</span> = basic.<span class="property">min</span>.<span class="property">js</span>;
+scrDom.<span class="call">addEventListener</span>(<span class="string">"load"</span>, () =&gt; {
+  <span class="keyword">if</span> (!haveMacJS) {
+    window.<span class="property">webkit</span>.<span class="property">messageHandlers</span>.<span class="property">setPlanSucceed</span>.<span class="call">postMessage</span>(<span class="string">""</span>);
+  }
+});
+const macScrDom = document.<span class="call">createElement</span>(<span class="string">"script"</span>);
+macScrDom.<span class="property">src</span> = mac.<span class="property">min</span>.<span class="property">js</span>;
+macScrDom.<span class="call">addEventListener</span>(<span class="string">"load"</span>, () =&gt; {
+  window.<span class="property">webkit</span>.<span class="property">mess<a href=https://cnsuer.github.io/articles/oc-webview-promise>...></a></span></code></pre><br><br><h3><a href=https://cnsuer.github.io/articles/oc-webview-promise>查看全文</a></h3>]]></content:encoded></item></channel></rss>
